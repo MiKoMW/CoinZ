@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class DateInfo {
 
-    String todayURL;
-    ArrayList<String> monthURL;
-    String today;
-    ArrayList<String> month;
+    public String todayURL;
+    public ArrayList<String> monthURL;
+    public String today;
+    public ArrayList<String> month;
 
 
     public DateInfo(String todayURL,String today, ArrayList<String> monthURL, ArrayList<String> month){

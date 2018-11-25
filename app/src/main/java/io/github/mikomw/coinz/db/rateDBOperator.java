@@ -52,13 +52,11 @@ public class rateDBOperator {
         return rate;
     }
 
-    public List<ExchangeRate> queryAlllRate() {
-        ArrayList<ExchangeRate> rates = new ArrayList<ExchangeRate>();
+    public List<String> queryAlllRate() {
+        ArrayList<String> rates = new ArrayList<String>();
         Cursor c = db.rawQuery("select date from rateData", null);
         while (c.moveToNext()) {
-            ExchangeRate rate = new ExchangeRate();
-            rate.setDate(c.getString(0));
-            rates.add(rate);
+            rates.add(c.getString(0));
         }
         c.close();
         return rates;

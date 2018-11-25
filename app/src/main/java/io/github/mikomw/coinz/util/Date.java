@@ -44,10 +44,6 @@ public class Date {
         DateInfo dateInfo = new DateInfo(todayURL,today,monthURL,month);
         return dateInfo;
 
-
-
-
-
     }
 
 
