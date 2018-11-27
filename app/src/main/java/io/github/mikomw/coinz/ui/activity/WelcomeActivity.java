@@ -44,11 +44,11 @@ public class WelcomeActivity extends Activity {
     private static final float SCALE_END = 1.15F;
 
     private static final int[] Imgs={
-            R.drawable.welcomimg1,R.drawable.welcomimg2,
-            R.drawable.welcomimg3,R.drawable.welcomimg4,
-            R.drawable.welcomimg6,
-            R.drawable.welcomimg7,R.drawable.welcomimg8,
-            R.drawable.welcomimg9,R.drawable.welcomimg10,
+            R.drawable.me1,R.drawable.me2,
+            R.drawable.me3,R.drawable.me4,
+            R.drawable.me5,
+            R.drawable.me6,R.drawable.me7,
+            R.drawable.me8,R.drawable.welcomimg10,
             R.drawable.welcomimg11,R.drawable.welcomimg12};
 
     DateInfo dateinfo;
@@ -111,7 +111,7 @@ public class WelcomeActivity extends Activity {
             public void onAnimationEnd(Animator animation)
             {
 
-                startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+                startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
                 WelcomeActivity.this.finish();
             }
         });
@@ -175,6 +175,7 @@ public class WelcomeActivity extends Activity {
 
 
 
+        /*
         List<ExchangeRate> temp =  rateDBOperator.queryMany();
 
 
@@ -185,6 +186,7 @@ public class WelcomeActivity extends Activity {
             System.out.println(ex.getQUID());
             System.out.println(ex.getSHIL());
         }
+        */
 
     }
 
