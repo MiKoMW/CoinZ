@@ -18,7 +18,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.db.ExchangeRate;
@@ -36,7 +36,7 @@ import rx.functions.Action1;
 
 public class WelcomeActivity extends Activity {
 
-    @Bind(R.id.iv_entry)
+    @BindView(R.id.iv_entry)
     ImageView mIVEntry;
 
     private static final int ANIM_TIME = 2000;
