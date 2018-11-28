@@ -307,7 +307,7 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
                         System.out.println("Success:" + task.isSuccessful());
 
                         if(task.isSuccessful()) {
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, MapActivity.class);
                             startActivity(intent);
 
                         }

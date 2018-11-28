@@ -23,7 +23,6 @@ import butterknife.ButterKnife;
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.db.ExchangeRate;
 import io.github.mikomw.coinz.db.rateDBOperator;
-import io.github.mikomw.coinz.ui.activity.MainActivity;
 import io.github.mikomw.coinz.util.Date;
 import io.github.mikomw.coinz.util.DateInfo;
 import io.github.mikomw.coinz.util.DownloadFileTask;

@@ -1,8 +1,10 @@
 package io.github.mikomw.coinz.ui.activity;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,50 +15,49 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.mapbox.android.core.location.LocationEngine;
+import com.mapbox.android.core.location.LocationEngineListener;
+import com.mapbox.android.core.location.LocationEnginePriority;
+import com.mapbox.android.core.location.LocationEngineProvider;
+import com.mapbox.android.core.permissions.PermissionsListener;
+import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
+import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode;
+import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode;
+
+import java.util.List;
 
 import io.github.mikomw.coinz.R;
 
-public class MapActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MapActivity extends AppCompatActivity implements
+        OnMapReadyCallback, LocationEngineListener,
+        PermissionsListener {
 
+    String tag = "MapActivity";
     private MapView mapView;
+    private MapboxMap map;
+    private PermissionsManager permissionsManager;
+    private LocationEngine locationEngine;
+    private LocationLayerPlugin locationLayerPlugin;
+    private Location originLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         Mapbox.getInstance(this, getString(R.string.mapboxtoken));
-
-        MapboxMapOptions options = new MapboxMapOptions()
-                .styleUrl(Style.OUTDOORS)
-                .camera(new CameraPosition.Builder()
-                        .target(new LatLng(43.7383, 7.4094))
-                        .zoom(12)
-                        .build());
-
         setContentView(R.layout.activity_map);
         mapView = findViewById(R.id.mapbox);
-
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(MapboxMap mapboxMap) {
-
-                // Customize map with markers, polylines, etc.
-
-            }
-        });
-
+        mapView.getMapAsync(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -66,9 +67,8 @@ public class MapActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -77,6 +77,108 @@ public class MapActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    public void onMapReady(MapboxMap mapboxMap) {
+
+        if (mapboxMap == null) {
+            Log.d(tag, "[onMapReady] mapBox is null");
+        } else {
+            map = mapboxMap;
+            map.getUiSettings().setCompassEnabled(true);
+            map.getUiSettings().setZoomControlsEnabled(true);
+            System.out.println("MapReady!");
+            enableLocation();
+        }
+    };
+
+
+    private void enableLocation() {
+        if (PermissionsManager.areLocationPermissionsGranted(this)) {
+            Log.d(tag, "Permissions are granted");
+            initializeLocationEngine();
+            initializeLocationLayer();
+        } else {
+            Log.d(tag, "Permissions are not granted");
+            permissionsManager = new PermissionsManager(this);
+            permissionsManager.requestLocationPermissions(this);
+        }
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void initializeLocationEngine() {
+        locationEngine = new LocationEngineProvider(this)
+                .obtainBestLocationEngineAvailable();
+        locationEngine.setInterval(5000); // preferably every 5 seconds
+        locationEngine.setFastestInterval(1000); // at most every second
+        locationEngine.setPriority(LocationEnginePriority.HIGH_ACCURACY);
+        locationEngine.activate();
+        Location lastLocation = locationEngine.getLastLocation();
+        if (lastLocation != null) {
+            originLocation = lastLocation;
+            setCameraPosition(lastLocation);
+        } else {
+            locationEngine.addLocationEngineListener(this);
+        }
+        System.out.println("Good");
+    };
+
+    @SuppressWarnings("MissingPermission")
+    private void initializeLocationLayer() {
+        if (mapView == null) {
+            Log.d(tag, "mapView is null");
+        } else {
+            if (map == null) {
+                Log.d(tag, "map is null");
+            } else {
+                locationLayerPlugin = new LocationLayerPlugin(mapView,
+                        map, locationEngine);
+                locationLayerPlugin.setLocationLayerEnabled(true);
+                locationLayerPlugin.setCameraMode(CameraMode.TRACKING);
+                locationLayerPlugin.setRenderMode(RenderMode.NORMAL);;
+            }
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        System.out.println(location.toString());
+        if (location == null) {
+            Log.d(tag, "[onLocationChanged] location is null");
+        } else {
+            Log.d(tag, "[onLocationChanged] location is not null");
+            originLocation = location;
+            setCameraPosition(location);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("MissingPermission")
+    public void onConnected() {
+        Log.d(tag, "[onConnected] requesting location updates");
+        locationEngine.requestLocationUpdates();
+    }
+
+    @Override
+    public void onExplanationNeeded(List<String> permissionsToExplain){
+        Log.d(tag, "Permissions: " + permissionsToExplain.toString());
+// Present toast or dialog.
+    }
+
+    private void setCameraPosition(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(),
+                location.getLongitude());
+        map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+
+    @Override
+    public void onPermissionResult(boolean granted) {
+        Log.d(tag, "[onPermissionResult] granted == " + granted);
+        if (granted) {
+            enableLocation();
+        } else {
+// Open a dialogue with the user
         }
     }
 
@@ -100,31 +202,6 @@ public class MapActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     // Activity lifecycle calls

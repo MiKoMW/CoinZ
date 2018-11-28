@@ -302,7 +302,7 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
                         Log.d(tag, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
                         if(task.isSuccessful()){
-                            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                            Intent intent = new Intent(SignupActivity.this, MapActivity.class);
                             startActivity(intent);
                         }
 
