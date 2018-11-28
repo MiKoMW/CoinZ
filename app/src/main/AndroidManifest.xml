@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -23,7 +24,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".ui.activity.MainActivity" />
-        <activity android:name=".ui.activity.LoadingActivity" />
         <activity
             android:name=".ui.activity.WelcomeActivity"
             android:screenOrientation="portrait"
@@ -38,7 +38,11 @@
         <activity
             android:name=".ui.activity.LoginActivity"
             android:label="@string/title_activity_login" />
-        <activity android:name=".ui.activity.SignupActivity"></activity>
+        <activity android:name=".ui.activity.SignupActivity" />
+        <activity
+            android:name=".ui.activity.MapActivity"
+            android:label="@string/title_activity_map"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

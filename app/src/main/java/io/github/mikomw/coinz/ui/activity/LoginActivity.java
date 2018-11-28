@@ -90,6 +90,9 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+        //Debug
+        Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+        startActivity(intent);
     }
 
     @Override

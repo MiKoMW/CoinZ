@@ -48,8 +48,7 @@ public class WelcomeActivity extends Activity {
             R.drawable.me3,R.drawable.me4,
             R.drawable.me5,
             R.drawable.me6,R.drawable.me7,
-            R.drawable.me8,R.drawable.welcomimg10,
-            R.drawable.welcomimg11,R.drawable.welcomimg12};
+            R.drawable.me8};
 
     DateInfo dateinfo;
     private rateDBOperator rateDBOperator;
@@ -175,6 +174,7 @@ public class WelcomeActivity extends Activity {
 
 
 
+        // For debug information.
         /*
         List<ExchangeRate> temp =  rateDBOperator.queryMany();
 
