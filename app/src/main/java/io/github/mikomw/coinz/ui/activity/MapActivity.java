@@ -260,9 +260,6 @@ public class MapActivity extends AppCompatActivity implements
 
             String currency = coin.getCurrency();
 
-
-
-
             switch (currency) {
                 case ("PENY"):
                     marker = peny_marker;
