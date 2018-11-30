@@ -1,10 +1,13 @@
 package io.github.mikomw.coinz.ui.activity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
@@ -13,13 +16,17 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import io.github.mikomw.coinz.R;
+import io.github.mikomw.coinz.coin.Coin;
+import io.github.mikomw.coinz.util.Miko;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,7 +39,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        readJson();
+
+
+
+        SharedPreferences mPrefs=this.getSharedPreferences(this.getApplicationInfo().name, Context.MODE_PRIVATE);
+        SharedPreferences.Editor ed=mPrefs.edit();
+        Gson gson = new Gson();
+        ed.putString("myObjectKey", gson.toJson(new Miko(1,2)));
+        ed.commit();
+
+
+
 
     }
 

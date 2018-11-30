@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class IO {
 
 
-    public static void writeToFile(File filePath, String fileName, String output){
+    public static void writeToFile(String filePath, String fileName, String output){
 
         File file = new File(filePath,fileName);
         try {

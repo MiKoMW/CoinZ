@@ -6,10 +6,10 @@ public class ExchangeRate {
 
     String Date;
 
-    float SHIL;
-    float DOLR;
-    float QUID;
-    float PENY;
+    double SHIL;
+    double DOLR;
+    double QUID;
+    double PENY;
 
     public String getDate() {
         return Date;
@@ -19,36 +19,36 @@ public class ExchangeRate {
         this.Date = Date;
     }
 
-    public float getSHIL() {
+    public double getSHIL() {
         return SHIL;
     }
 
-    public void setSHIL(float SHIL) {
+    public void setSHIL(double SHIL) {
         this.SHIL = SHIL;
     }
 
-    public float getDOLR() {
+    public double getDOLR() {
         return DOLR;
     }
 
-    public void setDOLR(float DOLR) {
+    public void setDOLR(double DOLR) {
         this.DOLR = DOLR;
     }
 
-    public float getQUID() {
+    public double getQUID() {
         return QUID;
     }
 
-    public void setQUID(float QUID) {
+    public void setQUID(double QUID) {
         this.QUID = QUID;
     }
 
 
-    public float getPENY() {
+    public double getPENY() {
         return PENY;
     }
 
-    public void setPENY(float PENY) {
+    public void setPENY(double PENY) {
         this.PENY = PENY;
     }
 

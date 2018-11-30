@@ -304,6 +304,7 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
                         if(task.isSuccessful()){
                             Intent intent = new Intent(SignupActivity.this, MapActivity.class);
                             startActivity(intent);
+                            mAuth.getCurrentUser().getUid();
                         }
 
                         if (!task.isSuccessful()) {

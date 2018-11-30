@@ -42,10 +42,10 @@ public class rateDBOperator {
 
         while (c.moveToNext()) {
             rate.setDate(c.getString(0));
-            rate.setSHIL(c.getFloat(1));
-            rate.setDOLR(c.getFloat(2));
-            rate.setQUID(c.getFloat(3));
-            rate.setPENY(c.getFloat(4));
+            rate.setSHIL(c.getDouble(1));
+            rate.setDOLR(c.getDouble(2));
+            rate.setQUID(c.getDouble(3));
+            rate.setPENY(c.getDouble(4));
         }
 
         c.close();
@@ -70,10 +70,10 @@ public class rateDBOperator {
         while (c.moveToNext()) {
             ExchangeRate rate = new ExchangeRate();
             rate.setDate(c.getString(0));
-            rate.setSHIL(c.getFloat(1));
-            rate.setDOLR(c.getFloat(2));
-            rate.setQUID(c.getFloat(3));
-            rate.setPENY(c.getFloat(4));
+            rate.setSHIL(c.getDouble(1));
+            rate.setDOLR(c.getDouble(2));
+            rate.setQUID(c.getDouble(3));
+            rate.setPENY(c.getDouble(4));
             rates.add(rate);
         }
         c.close();

@@ -33,7 +33,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity android:name=".ui.activity.WelcomeGuideActivity" />
         <activity
@@ -45,6 +44,7 @@
             android:label="@string/title_activity_map"
             android:theme="@style/AppTheme" />
         <activity android:name=".ui.activity.MainActivity">
+
 
 
         </activity>
