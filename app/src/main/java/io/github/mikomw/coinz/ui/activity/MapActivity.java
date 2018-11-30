@@ -112,10 +112,11 @@ public class MapActivity extends AppCompatActivity implements
             map.getUiSettings().setCompassEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
             System.out.println("MapReady!");
-            enableLocation();
             coins = SerializableManager.readSerializable(this,"todayCoins.coin");
             setIcon();
+            enableLocation();
         }
+
     };
 
 
@@ -253,22 +254,22 @@ public class MapActivity extends AppCompatActivity implements
 
             switch (currency) {
                 case ("PENY"):
-                    marker = iconFactory.fromResource(R.drawable.peny);
+                    marker = iconFactory.fromResource(R.drawable.redcoin);
 
                     break;
                 case ("QUID"):
-                    marker = iconFactory.fromResource(R.drawable.quid);
+                    marker = iconFactory.fromResource(R.drawable.bluecoin);
                     break;
 
                 case ("SHIL"):
-                    marker = iconFactory.fromResource(R.drawable.shil);
+                    marker = iconFactory.fromResource(R.drawable.greencoin);
                     break;
 
                 case ("DOLR"):
-                    marker = iconFactory.fromResource(R.drawable.dola);
+                    marker = iconFactory.fromResource(R.drawable.yellowcoin);
                     break;
                 default:
-                    marker = iconFactory.fromResource(R.drawable.defultcoin);
+                    marker = iconFactory.fromResource(R.drawable.blackcoin);
                     break;
             }
             //marker = iconFactory.fromResource(R.mipmap.google_logo);
@@ -276,7 +277,6 @@ public class MapActivity extends AppCompatActivity implements
 
             String value = " " + coin.getValue();
             markerOptions.add(new MarkerOptions().position(coin.getLatLng()).title(currency).snippet(value).icon(marker));
-            System.out.println(coin.getLatLng());
             //map.addMarker(new MarkerOptions().position(coin.getLatLng()));
 
 
