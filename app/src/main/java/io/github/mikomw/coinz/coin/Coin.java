@@ -14,7 +14,6 @@ public class Coin implements Serializable {
     private boolean isFirstCollect;
 
 
-
     public Coin(String id, double value, String currency, LatLng latLng) {
         this.id = id;
         this.value = value;

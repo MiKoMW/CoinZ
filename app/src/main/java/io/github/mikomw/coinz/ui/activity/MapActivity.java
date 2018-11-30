@@ -1,13 +1,8 @@
 package io.github.mikomw.coinz.ui.activity;
 
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,45 +17,28 @@ import com.mapbox.android.core.location.LocationEnginePriority;
 import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode;
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode;
-import com.mapbox.mapboxsdk.style.layers.LineLayer;
-import com.mapbox.mapboxsdk.style.light.Position;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.coin.Coin;
 import io.github.mikomw.coinz.util.SerializableManager;
-
-import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
 
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback, LocationEngineListener,
@@ -73,7 +51,13 @@ public class MapActivity extends AppCompatActivity implements
     private LocationEngine locationEngine;
     private LocationLayerPlugin locationLayerPlugin;
     private Location originLocation;
-    ArrayList<Coin> coins;
+    ArrayList<Coin> todayCoins;
+    HashMap<String,Marker> todayIcons;
+
+    //=================================================这个以后得改
+    HashSet<String> todayCollectedID;
+    ArrayList<Coin> CollectedCoins;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +73,10 @@ public class MapActivity extends AppCompatActivity implements
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        todayIcons = new HashMap<>();
+        todayCollectedID = new HashSet<>();
+        CollectedCoins = new ArrayList<>();
 
     }
 
@@ -112,7 +100,7 @@ public class MapActivity extends AppCompatActivity implements
             map.getUiSettings().setCompassEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
             System.out.println("MapReady!");
-            coins = SerializableManager.readSerializable(this,"todayCoins.coin");
+            todayCoins = SerializableManager.readSerializable(this,"todayCoins.coin");
             setIcon();
             enableLocation();
         }
@@ -176,7 +164,11 @@ public class MapActivity extends AppCompatActivity implements
             Log.d(tag, "[onLocationChanged] location is not null");
             originLocation = location;
             setCameraPosition(location);
+
+            collectCoins(location);
+            updateIcon();
         }
+
     }
 
     @Override
@@ -240,7 +232,6 @@ public class MapActivity extends AppCompatActivity implements
     }
 
     private void setIcon(){
-
         IconFactory iconFactory = IconFactory.getInstance(this);
         Icon peny_marker;
         Icon quid_marker;
@@ -256,8 +247,11 @@ public class MapActivity extends AppCompatActivity implements
         defult_marker = iconFactory.fromResource(R.drawable.blackcoin);
 
         List<MarkerOptions> markerOptions = new ArrayList<>();
-        for(Coin coin : coins) {
+        for(Coin coin : todayCoins) {
 
+            if(todayCollectedID.contains(coin.getId())){
+                continue;
+            }
             String currency = coin.getCurrency();
 
             switch (currency) {
@@ -283,15 +277,31 @@ public class MapActivity extends AppCompatActivity implements
 
 
             String value = " " + coin.getValue();
-            markerOptions.add(new MarkerOptions().position(coin.getLatLng()).title(currency).snippet(value).icon(marker));
+            MarkerOptions thisMark = new MarkerOptions().position(coin.getLatLng()).title(currency).snippet(value).icon(marker);
+            markerOptions.add(thisMark);
+            Marker markerTemp = map.addMarker(thisMark);
+            todayIcons.put(coin.getId(),markerTemp);
             //map.addMarker(new MarkerOptions().position(coin.getLatLng()));
-
-
         }
         System.out.println(markerOptions.size());
-        map.addMarkers(markerOptions);
         System.out.println("Set");
 
+    }
+
+    int con = 0;
+    private void updateIcon(){
+
+        for(String id : todayCollectedID) {
+            if(!todayIcons.keySet().contains(id)){
+                continue;
+            }
+
+            System.out.println("Remove " + id);
+            System.out.println(++con);
+            Marker thisMark = todayIcons.get(id);
+            map.removeMarker(thisMark);
+            todayIcons.remove(id);
+        }
     }
 
     @Override
@@ -330,6 +340,21 @@ public class MapActivity extends AppCompatActivity implements
         mapView.onSaveInstanceState(outState);
     }
 
+    private void collectCoins(Location location){
+        LatLng latLng = new LatLng(location.getLatitude(),
+                location.getLongitude());
+        for(Coin coin : this.todayCoins){
+            if(coin.getLatLng().distanceTo(latLng) <= 25){
+                if(!todayCollectedID.contains(coin.getId())){
+                    todayCollectedID.add(coin.getId());
+                    CollectedCoins.add(coin);
+                }
+            }
+        }
+
+        // Coin collected.
+
+    }
 
 }
 

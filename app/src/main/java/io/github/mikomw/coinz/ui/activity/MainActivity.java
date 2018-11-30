@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
 
             /*
-            for(int con = 0; con <coins.length(); con++){
-                System.out.println(coins.getJSONObject(con));
+            for(int con = 0; con <todayCoins.length(); con++){
+                System.out.println(todayCoins.getJSONObject(con));
             }*/
 
             JSONObject coin = coins.getJSONObject(0);
