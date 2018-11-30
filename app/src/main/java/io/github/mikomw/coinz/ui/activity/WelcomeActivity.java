@@ -5,9 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -15,6 +13,12 @@ import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -26,18 +30,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.mikomw.coinz.R;
+import io.github.mikomw.coinz.coin.Coin;
 import io.github.mikomw.coinz.db.ExchangeRate;
 import io.github.mikomw.coinz.db.rateDBOperator;
 import io.github.mikomw.coinz.util.Date;
 import io.github.mikomw.coinz.util.DateInfo;
-import io.github.mikomw.coinz.util.DownloadCompleteRunner;
 import io.github.mikomw.coinz.util.IO;
+import io.github.mikomw.coinz.util.SerializableManager;
 import io.github.mikomw.coinz.util.SharedPreferencesUtil;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -218,7 +222,35 @@ public class WelcomeActivity extends Activity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             IO.writeToFile(this.weakActivity.get().getFilesDir().getPath(),"todayMap.geojson",result);
-            DownloadCompleteRunner.downloadComplete(result);
+
+            ArrayList<Coin> todaycoins = new ArrayList<>();
+            try {
+                FeatureCollection coins = FeatureCollection.fromJson(result);
+                if(coins == null){
+                    return;
+                }
+                for (Feature feature : coins.features()) {
+                    // Coin features ==============================================//
+                    String id = feature.getStringProperty("id");
+                    Double value = Double.parseDouble(feature.getStringProperty("value"));
+                    String currency = feature.getStringProperty("currency");
+                    Point point = (Point) feature.geometry();
+                    LatLng latLng = new LatLng(point.latitude(), point.longitude());
+
+                    Double lat = latLng.getLatitude();
+                    Double Lng = latLng.getLongitude();
+
+
+                    // Creating coin object
+                    Coin coin = new Coin(id,value,currency,latLng);
+                    todaycoins.add(coin);
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+
+            SerializableManager.saveSerializable(this.weakActivity.get(),todaycoins,"todayCoins.coin");
+
             ((WelcomeActivity) weakActivity.get()).jumpToLogin();
 
         }
@@ -299,7 +331,6 @@ public class WelcomeActivity extends Activity {
             try {
                 JSONObject json = new JSONObject(temp);
                 JSONObject rates = json.getJSONObject("rates");
-                System.out.println();
                 Double SHIL = (rates).getDouble("SHIL");
                 Double DOLR = (rates).getDouble("DOLR");
                 Double QUID = (rates).getDouble("QUID");

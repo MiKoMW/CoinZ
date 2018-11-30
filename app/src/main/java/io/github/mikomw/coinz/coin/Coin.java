@@ -2,39 +2,46 @@ package io.github.mikomw.coinz.coin;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
-public class Coin {
+import java.io.Serializable;
+
+public class Coin implements Serializable {
 
     private String id;
-    private float value;
+    private double value;
     private String currency;
-    private LatLng latLng;
+    private double lat;
+    private double lng;
     private boolean isFirstCollect;
 
-    public Coin(String id, float value, String currency, LatLng latLng) {
+
+
+    public Coin(String id, double value, String currency, LatLng latLng) {
         this.id = id;
         this.value = value;
         this.currency = currency;
-        this.latLng = latLng;
         this.isFirstCollect = false;
+        this.lat = latLng.getLatitude();
+        this.lng = latLng.getLongitude();
     }
 
-    public Coin(String id, float value, String currency, LatLng latLng, boolean isFirstCollect) {
+    public Coin(String id, double value, String currency, LatLng latLng, boolean isFirstCollect) {
         this.id = id;
         this.value = value;
         this.currency = currency;
-        this.latLng = latLng;
         this.isFirstCollect = isFirstCollect;
+        this.lat = latLng.getLatitude();
+        this.lng = latLng.getLongitude();
     }
 
     public void setLocation(LatLng a) {
-        this.latLng = a;
-    }
+        this.lat = a.getLatitude();
+        this.lng = a.getLongitude();    }
 
     public String getId() {
         return id;
     }
 
-    public Float getValue() {
+    public double getValue() {
         return value;
     }
 
@@ -43,7 +50,7 @@ public class Coin {
     }
 
     public LatLng getLatLng() {
-        return latLng;
+        return new LatLng(this.lat,this.lng);
     }
 
     public String toString() {
