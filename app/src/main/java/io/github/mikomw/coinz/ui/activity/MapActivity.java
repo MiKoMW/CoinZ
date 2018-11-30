@@ -242,10 +242,21 @@ public class MapActivity extends AppCompatActivity implements
     private void setIcon(){
 
         IconFactory iconFactory = IconFactory.getInstance(this);
+        Icon peny_marker;
+        Icon quid_marker;
+        Icon shil_marker;
+        Icon dolr_marker;
+        Icon defult_marker;
+        Icon marker;
+
+        peny_marker = iconFactory.fromResource(R.drawable.redcoin);
+        quid_marker = iconFactory.fromResource(R.drawable.bluecoin);
+        shil_marker = iconFactory.fromResource(R.drawable.greencoin);
+        dolr_marker = iconFactory.fromResource(R.drawable.yellowcoin);
+        defult_marker = iconFactory.fromResource(R.drawable.blackcoin);
 
         List<MarkerOptions> markerOptions = new ArrayList<>();
         for(Coin coin : coins) {
-            Icon marker;
 
             String currency = coin.getCurrency();
 
@@ -254,22 +265,21 @@ public class MapActivity extends AppCompatActivity implements
 
             switch (currency) {
                 case ("PENY"):
-                    marker = iconFactory.fromResource(R.drawable.redcoin);
-
+                    marker = peny_marker;
                     break;
                 case ("QUID"):
-                    marker = iconFactory.fromResource(R.drawable.bluecoin);
+                    marker = quid_marker;
                     break;
 
                 case ("SHIL"):
-                    marker = iconFactory.fromResource(R.drawable.greencoin);
+                    marker = shil_marker;
                     break;
 
                 case ("DOLR"):
-                    marker = iconFactory.fromResource(R.drawable.yellowcoin);
+                    marker = dolr_marker;
                     break;
                 default:
-                    marker = iconFactory.fromResource(R.drawable.blackcoin);
+                    marker = defult_marker;
                     break;
             }
             //marker = iconFactory.fromResource(R.mipmap.google_logo);
