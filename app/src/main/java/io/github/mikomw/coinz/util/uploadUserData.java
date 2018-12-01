@@ -23,6 +23,7 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import io.github.mikomw.coinz.coin.Coin;
@@ -35,9 +36,10 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
 
     private final WeakReference<Activity> weakActivity;
     private io.github.mikomw.coinz.db.rateDBOperator rateDBOperator;
-
+    boolean isSignUp;
     public uploadUserData(Activity myActivity) {
         this.weakActivity = new WeakReference<>(myActivity);
+        this.isSignUp = (this.weakActivity.get() instanceof SignupActivity);
     }
 
     @Override
@@ -66,8 +68,9 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
             public void onFailure(@NonNull Exception exception) {
                 System.out.println("Fail to upload todayCollectedCoin.data");
                 // Handle unsuccessful uploads
-                SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<String>(),"todayCollectedCoinID.data");
-                todayCollectedRef.putFile(file);
+                if(isSignUp){
+                SerializableManager.saveSerializable(weakActivity.get(),new HashSet<String>(),"todayCollectedCoinID.data");
+                todayCollectedRef.putFile(file);}
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -86,8 +89,9 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
             public void onFailure(@NonNull Exception exception) {
                 System.out.println("Fail to upload collectedCoin.data");
                 // Handle unsuccessful uploads
+                if(isSignUp){
                 SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"collectedCoin.data");
-                collectedRef.putFile(collected);
+                collectedRef.putFile(collected);}
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -105,9 +109,12 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 System.out.println("Fail to upload spareChange.data");
-                SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"spareChange.data");
-                spareChangeRef.putFile(spareChange);
-                // Handle unsuccessful uploads
+                if (isSignUp) {
+                    SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"spareChange.data");
+                    spareChangeRef.putFile(spareChange);
+                    // Handle unsuccessful uploads
+                }
+
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -127,8 +134,10 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
             public void onFailure(@NonNull Exception exception) {
                 System.out.println("Fail to upload userInfo.data");
                 // Handle unsuccessful uploads
-                SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"userInfo.data");
-                userInfoRef.putFile(userInfo);
+                if(isSignUp){
+                    SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"userInfo.data");
+                    userInfoRef.putFile(userInfo);
+                }
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override

@@ -39,6 +39,7 @@ import java.util.List;
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.coin.Coin;
 import io.github.mikomw.coinz.util.SerializableManager;
+import io.github.mikomw.coinz.util.uploadUserData;
 
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback, LocationEngineListener,
@@ -57,7 +58,9 @@ public class MapActivity extends AppCompatActivity implements
     //=================================================这个以后得改
     HashSet<String> todayCollectedID;
     ArrayList<Coin> CollectedCoins;
-
+    long lastUpdateTime;
+    int lastCoinCollected;
+    String Uid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +78,10 @@ public class MapActivity extends AppCompatActivity implements
         toggle.syncState();
 
         todayIcons = new HashMap<>();
-        todayCollectedID = new HashSet<>();
-        CollectedCoins = new ArrayList<>();
-
+        CollectedCoins = SerializableManager.readSerializable(this,"collectedCoin.data");
+        lastUpdateTime = System.currentTimeMillis();
+        lastCoinCollected = 0;
+        Uid = getIntent().getStringExtra("Uid");
     }
 
 
@@ -100,6 +104,7 @@ public class MapActivity extends AppCompatActivity implements
             map.getUiSettings().setCompassEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
             System.out.println("MapReady!");
+            todayCollectedID = SerializableManager.readSerializable(this,"todayCollectedCoinID.data");
             todayCoins = SerializableManager.readSerializable(this,"todayCoins.coin");
             setIcon();
             enableLocation();
@@ -285,6 +290,7 @@ public class MapActivity extends AppCompatActivity implements
         }
         System.out.println(markerOptions.size());
         System.out.println("Set");
+        updateIcon();
 
     }
 
@@ -348,6 +354,21 @@ public class MapActivity extends AppCompatActivity implements
                 if(!todayCollectedID.contains(coin.getId())){
                     todayCollectedID.add(coin.getId());
                     CollectedCoins.add(coin);
+
+                    long thistime = System.currentTimeMillis();
+                    int coinCollected = todayCollectedID.size();
+                    if(thistime - lastUpdateTime >= 60000 || (coinCollected - lastCoinCollected) >= 5){
+                        lastUpdateTime = thistime;
+                        lastCoinCollected = coinCollected;
+
+                        SerializableManager.saveSerializable(this,todayCollectedID,"todayCollectedCoinID.data");
+                        SerializableManager.saveSerializable(this,CollectedCoins,"collectedCoin.data");
+
+                        uploadUserData uploadUserData = new uploadUserData(this);
+                        uploadUserData.execute(this.Uid);
+                        System.out.println(Uid);
+                    }
+
                 }
             }
         }

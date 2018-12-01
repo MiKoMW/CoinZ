@@ -357,7 +357,9 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
     }
 
     public void jumpToMap(){
-        startActivity(new Intent(this, MapActivity.class));
+        Intent mapIntent = new Intent(this, MapActivity.class);
+        mapIntent.putExtra("Uid",mAuth.getUid());
+        startActivity(mapIntent);
         this.finish();
     }
 

@@ -23,6 +23,7 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import io.github.mikomw.coinz.coin.Coin;
@@ -35,9 +36,11 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
 
     private final WeakReference<Activity> weakActivity;
     private io.github.mikomw.coinz.db.rateDBOperator rateDBOperator;
+    boolean isLogin;
 
     public downloadUserData(Activity myActivity) {
         this.weakActivity = new WeakReference<>(myActivity);
+        isLogin = this.weakActivity.get() instanceof LoginActivity;
     }
 
     @Override
@@ -71,8 +74,9 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 System.out.println("Fail to download todayCollectedCoinID.data");
-                SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<String>(),"todayCollectedCoinID.data");
-
+                if(isLogin) {
+                    SerializableManager.saveSerializable(weakActivity.get(), new HashSet<String>(), "todayCollectedCoinID.data");
+                }
             }
         });
 
@@ -87,8 +91,9 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 System.out.println("Fail to download collectedCoin.data");
-                SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"collectedCoin.data");
-
+                if(isLogin) {
+                    SerializableManager.saveSerializable(weakActivity.get(), new ArrayList<Coin>(), "collectedCoin.data");
+                }
             }
         });
 
@@ -103,6 +108,7 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 System.out.println("Fail to download spareChangeCoin.data");
+                if(isLogin)
                 SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"spareChangeCoin.data");
 
             }
@@ -110,7 +116,7 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
 
         File userInfoFile = new File(this.weakActivity.get().getFilesDir().getPath(),"userInfo.data");
 
-        userInfoRef.getFile(spareChangeCoinFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+        userInfoRef.getFile(userInfoFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                 System.out.println("DownLoad Success userInfo.data");
@@ -119,7 +125,8 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 System.out.println("Fail to download userInfo.data");
-                SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"userInfo.data");
+                if(isLogin)
+                    SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"userInfo.data");
 
             }
         });

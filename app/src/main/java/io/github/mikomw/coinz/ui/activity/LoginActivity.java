@@ -364,7 +364,9 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
     }
 
     public void jumpToMap(){
-            startActivity(new Intent(this, MapActivity.class));
+            Intent mapIntent = new Intent(this, MapActivity.class);
+            mapIntent.putExtra("Uid",mAuth.getUid());
+            startActivity(mapIntent);
             this.finish();
     }
 
