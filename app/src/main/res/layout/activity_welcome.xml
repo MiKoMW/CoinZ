@@ -22,17 +22,16 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="100dp"
         android:gravity="center"
-        android:text="xialong"
+        android:text="CoinZ"
         android:textColor="@android:color/white"
         android:textSize="23sp"/>
 
-    <ImageView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/google_logo"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="60dp"
-        android:layout_centerInParent="true"
-        android:tint="@android:color/white" />
+        android:layout_centerHorizontal="true"
+        android:text="The Coin Company"
+        android:layout_marginBottom="60dp" />
 
 </RelativeLayout>

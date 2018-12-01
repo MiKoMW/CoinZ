@@ -2,11 +2,19 @@ package io.github.mikomw.coinz.ui.activity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -15,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -40,14 +49,50 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        StorageReference users = storageRef.child("users");
+        StorageReference thisuser = storageRef.child("10086");
+        StorageReference coinRef = thisuser.child("coin.data");
+
+        /*
+        Uri file = Uri.fromFile(new File(this.getFilesDir().getPath(),"todayCoins.coin"));
+        UploadTask uploadTask = coinRef.putFile(file);
+
+// Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                System.out.println("Fail        ");
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+                System.out.println("Success");
+
+            }
+        });
+*/
 
 
-        SharedPreferences mPrefs=this.getSharedPreferences(this.getApplicationInfo().name, Context.MODE_PRIVATE);
-        SharedPreferences.Editor ed=mPrefs.edit();
-        Gson gson = new Gson();
-        ed.putString("myObjectKey", gson.toJson(new Miko(1,2)));
-        ed.commit();
 
+        File downLoadFile = new File(this.getFilesDir().getPath(),"todayCoins.coin");
+
+        coinRef.getFile(downLoadFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                System.out.println("DownLoad");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                System.out.println("NO!!");
+            }
+        });
 
 
 

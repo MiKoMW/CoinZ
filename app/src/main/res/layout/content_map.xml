@@ -13,7 +13,8 @@
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapbox"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="648dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -21,8 +22,7 @@
         mapbox:mapbox_cameraTargetLat="55.944"
         mapbox:mapbox_cameraTargetLng="-3.188396"
         mapbox:mapbox_cameraZoom="15"
-        mapbox:mapbox_styleUrl="@string/mapbox_style_outdoors"
-        />
+        mapbox:mapbox_styleUrl="@string/mapbox_style_outdoors" />
 
 
 </android.support.constraint.ConstraintLayout>
