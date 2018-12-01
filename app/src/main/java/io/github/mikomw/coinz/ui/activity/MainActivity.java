@@ -36,6 +36,9 @@ import java.util.ArrayList;
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.coin.Coin;
 import io.github.mikomw.coinz.util.Miko;
+import io.github.mikomw.coinz.util.deleteUserData;
+import io.github.mikomw.coinz.util.downloadUserData;
+import io.github.mikomw.coinz.util.uploadUserData;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,53 +51,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-
-        StorageReference users = storageRef.child("users");
-        StorageReference thisuser = storageRef.child("10086");
-        StorageReference coinRef = thisuser.child("coin.data");
-
-        /*
-        Uri file = Uri.fromFile(new File(this.getFilesDir().getPath(),"todayCoins.coin"));
-        UploadTask uploadTask = coinRef.putFile(file);
-
-// Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                System.out.println("Fail        ");
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-                System.out.println("Success");
-
-            }
-        });
-*/
-
-
-
-        File downLoadFile = new File(this.getFilesDir().getPath(),"todayCoins.coin");
-
-        coinRef.getFile(downLoadFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("DownLoad");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                System.out.println("NO!!");
-            }
-        });
-
-
+        downloadUserData task = new downloadUserData(this);
+        task.execute("100086");
 
     }
 

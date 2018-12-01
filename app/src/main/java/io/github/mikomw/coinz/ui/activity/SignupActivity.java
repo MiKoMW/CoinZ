@@ -1,6 +1,7 @@
 package io.github.mikomw.coinz.ui.activity;
 
 import io.github.mikomw.coinz.R;
+import io.github.mikomw.coinz.util.uploadUserData;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -302,9 +303,9 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
                         Log.d(tag, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
                         if(task.isSuccessful()){
-                            Intent intent = new Intent(SignupActivity.this, MapActivity.class);
-                            startActivity(intent);
-                            mAuth.getCurrentUser().getUid();
+                            String Uid = mAuth.getCurrentUser().getUid();
+                            uploadUserData uploadUserData = new uploadUserData(SignupActivity.this);
+                            uploadUserData.execute(Uid);
                         }
 
                         if (!task.isSuccessful()) {
@@ -353,6 +354,11 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
 
     public void onBackPressed() {
         finish();
+    }
+
+    public void jumpToMap(){
+        startActivity(new Intent(this, MapActivity.class));
+        this.finish();
     }
 
 }

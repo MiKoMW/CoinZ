@@ -2,6 +2,7 @@ package io.github.mikomw.coinz.ui.activity;
 
 
 import io.github.mikomw.coinz.R;
+import io.github.mikomw.coinz.util.downloadUserData;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -91,8 +92,8 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
         //Debug
-        Intent intent = new Intent(LoginActivity.this, MapActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+        //startActivity(intent);
     }
 
     @Override
@@ -307,8 +308,9 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
                         System.out.println("Success:" + task.isSuccessful());
 
                         if(task.isSuccessful()) {
-                            Intent intent = new Intent(LoginActivity.this, MapActivity.class);
-                            startActivity(intent);
+                            downloadUserData downloadUserData = new downloadUserData(LoginActivity.this);
+                            downloadUserData.execute(mAuth.getUid());
+                            System.out.println(mAuth.getUid() + "Log in");
                         }
 
 
@@ -359,6 +361,11 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
 
     public void onBackPressed() {
         finish();
+    }
+
+    public void jumpToMap(){
+            startActivity(new Intent(this, MapActivity.class));
+            this.finish();
     }
 
 }

@@ -43,6 +43,7 @@ import io.github.mikomw.coinz.util.DateInfo;
 import io.github.mikomw.coinz.util.IO;
 import io.github.mikomw.coinz.util.SerializableManager;
 import io.github.mikomw.coinz.util.SharedPreferencesUtil;
+import io.github.mikomw.coinz.util.deleteUserData;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -80,6 +81,8 @@ public class WelcomeActivity extends Activity {
         myTask.execute(dateinfo.todayURL);
         UpdateRateTask updatedRates = new UpdateRateTask(this);
         updatedRates.execute();
+        deleteUserData deleteUserData = new deleteUserData(this);
+        deleteUserData.delete();
 
         if (isFirstOpen) {
             Intent intent = new Intent(this, WelcomeGuideActivity.class);
