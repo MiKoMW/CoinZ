@@ -31,6 +31,7 @@ import io.github.mikomw.coinz.db.ExchangeRate;
 import io.github.mikomw.coinz.db.rateDBOperator;
 import io.github.mikomw.coinz.ui.activity.LoginActivity;
 import io.github.mikomw.coinz.ui.activity.WelcomeActivity;
+import io.github.mikomw.coinz.user.User;
 
 public class downloadUserData extends AsyncTask<String, Void, Boolean> {
 
@@ -126,7 +127,7 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
             public void onFailure(@NonNull Exception exception) {
                 System.out.println("Fail to download userInfo.data");
                 if(isLogin)
-                    SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"userInfo.data");
+                    SerializableManager.saveSerializable(weakActivity.get(),new User(userID),"userInfo.data");
 
             }
         });

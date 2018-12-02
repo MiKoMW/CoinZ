@@ -31,6 +31,7 @@ import io.github.mikomw.coinz.db.ExchangeRate;
 import io.github.mikomw.coinz.db.rateDBOperator;
 import io.github.mikomw.coinz.ui.activity.SignupActivity;
 import io.github.mikomw.coinz.ui.activity.WelcomeActivity;
+import io.github.mikomw.coinz.user.User;
 
 public class uploadUserData extends AsyncTask<String, Void, Boolean> {
 
@@ -135,7 +136,7 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
                 System.out.println("Fail to upload userInfo.data");
                 // Handle unsuccessful uploads
                 if(isSignUp){
-                    SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"userInfo.data");
+                    SerializableManager.saveSerializable(weakActivity.get(),new User(userID),"userInfo.data");
                     userInfoRef.putFile(userInfo);
                 }
             }

@@ -1,7 +1,9 @@
 package io.github.mikomw.coinz.ui.activity;
 
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.support.v4.view.GravityCompat;
@@ -9,9 +11,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mapbox.android.core.location.LocationEngine;
@@ -34,6 +41,8 @@ import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode;
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,12 +50,13 @@ import java.util.List;
 
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.coin.Coin;
+import io.github.mikomw.coinz.user.User;
 import io.github.mikomw.coinz.util.SerializableManager;
 import io.github.mikomw.coinz.util.uploadUserData;
 
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback, LocationEngineListener,
-        PermissionsListener {
+        PermissionsListener, NavigationView.OnNavigationItemSelectedListener{
 
     String tag = "MapActivity";
     private MapView mapView;
@@ -64,6 +74,15 @@ public class MapActivity extends AppCompatActivity implements
     long lastUpdateTime;
     int lastCoinCollected;
     String Uid;
+    User user;
+
+    TextView userNickName;
+    ImageView avater;
+    DrawerLayout drawer;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,20 +101,51 @@ public class MapActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         toolbar.setNavigationIcon(R.drawable.account);
         toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.menu));
-        //TextView userName = drawer.findViewById(R.id.drawer_NikeName);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        //设置navigationview的menu监听
+        navigationView.setNavigationItemSelectedListener(this);
+
 
         Uid = getIntent().getStringExtra("Uid");
         //userName.setText(Uid);
         todayIcons = new HashMap<>();
         lastUpdateTime = System.currentTimeMillis();
         lastCoinCollected = 0;
+
+        View headerView = navigationView.getHeaderView(0);
+        userNickName = headerView.findViewById(R.id.drawer_NikeName);
+
+
+
+    }
+
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_wallet) {
+            System.out.println("Wallet Sellected");
+        } else if (id == R.id.nav_guide) {
+
+            System.out.println("Guide Sellected");
+
+        } else if (id == R.id.nav_setting) {
+            System.out.println("setting sellected;");
+
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
 
@@ -121,11 +171,20 @@ public class MapActivity extends AppCompatActivity implements
             todayCollectedID = SerializableManager.readSerializable(this,"todayCollectedCoinID.data");
             todayCoins = SerializableManager.readSerializable(this,"todayCoins.coin");
             CollectedCoins = SerializableManager.readSerializable(this,"collectedCoin.data");
+            user = SerializableManager.readSerializable(this,"userInfo.data");
+
+            initUserView();
             setIcon();
             enableLocation();
         }
 
     };
+
+    private void initUserView(){
+        userNickName.setText(user.getNickName());
+        System.out.println(user.getNickName());
+
+    }
 
 
     private void enableLocation() {
