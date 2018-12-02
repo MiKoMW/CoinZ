@@ -2,6 +2,7 @@ package io.github.mikomw.coinz.ui.activity;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineListener;
@@ -70,18 +73,29 @@ public class MapActivity extends AppCompatActivity implements
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+
+//        toolbar.setOverflowIcon;n
+        //toolbar.setTitle("HelloToolbar");
+        //toolbar.setSubtitle("SubTitle");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        toolbar.setNavigationIcon(R.drawable.account);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.menu));
+        //TextView userName = drawer.findViewById(R.id.drawer_NikeName);
 
+        Uid = getIntent().getStringExtra("Uid");
+        //userName.setText(Uid);
         todayIcons = new HashMap<>();
-        CollectedCoins = SerializableManager.readSerializable(this,"collectedCoin.data");
         lastUpdateTime = System.currentTimeMillis();
         lastCoinCollected = 0;
-        Uid = getIntent().getStringExtra("Uid");
     }
 
 
@@ -106,6 +120,7 @@ public class MapActivity extends AppCompatActivity implements
             System.out.println("MapReady!");
             todayCollectedID = SerializableManager.readSerializable(this,"todayCollectedCoinID.data");
             todayCoins = SerializableManager.readSerializable(this,"todayCoins.coin");
+            CollectedCoins = SerializableManager.readSerializable(this,"collectedCoin.data");
             setIcon();
             enableLocation();
         }
