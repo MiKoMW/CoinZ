@@ -153,11 +153,12 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
             Intent intent = new Intent(this,
                     MapActivity.class);
             startActivity(intent);
-        }
+        }else {
 
-        Intent intent = new Intent(WelcomeGuideActivity.this,
-                WelcomeActivity.class);
-        startActivity(intent);
+            Intent intent = new Intent(WelcomeGuideActivity.this,
+                    WelcomeActivity.class);
+            startActivity(intent);
+        }
         SharedPreferencesUtil.putBoolean(WelcomeGuideActivity.this, SharedPreferencesUtil.FIRST_OPEN, false);
         finish();
     }

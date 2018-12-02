@@ -1,5 +1,6 @@
 package io.github.mikomw.coinz.ui.activity;
 
+import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -178,9 +179,19 @@ public class MapActivity extends AppCompatActivity implements
             CollectedCoins = SerializableManager.readSerializable(this,"collectedCoin.data");
             user = SerializableManager.readSerializable(this,"userInfo.data");
 
-            initUserView();
+
+            /*
+            try{
+                Thread.sleep(2000);
+            }catch (Exception e){
+                e.printStackTrace();
+            }*/
+
             setIcon();
             enableLocation();
+            initUserView();
+
+
         }
 
     };
@@ -223,17 +234,21 @@ public class MapActivity extends AppCompatActivity implements
 
     @SuppressWarnings("MissingPermission")
     private void initializeLocationLayer() {
+
         if (mapView == null) {
             Log.d(tag, "mapView is null");
         } else {
             if (map == null) {
                 Log.d(tag, "map is null");
             } else {
+
                 locationLayerPlugin = new LocationLayerPlugin(mapView,
                         map, locationEngine);
                 locationLayerPlugin.setLocationLayerEnabled(true);
                 locationLayerPlugin.setCameraMode(CameraMode.TRACKING);
-                locationLayerPlugin.setRenderMode(RenderMode.NORMAL);;
+                locationLayerPlugin.setRenderMode(RenderMode.NORMAL);
+                Lifecycle lifecycle = getLifecycle();
+                lifecycle.addObserver(locationLayerPlugin);
             }
         }
     }
@@ -305,15 +320,31 @@ public class MapActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    // Activity lifecycle calls
+
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         mapView.onStart();
 
+        if(locationEngine != null){
 
+            try {
+                locationEngine.requestLocationUpdates();
+            } catch(SecurityException ignored) {}
+            locationEngine.addLocationEngineListener(this);
+        }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
+
+        if(locationEngine != null){
+            locationEngine.removeLocationEngineListener(this);
+            locationEngine.removeLocationUpdates();
+        }
+    }
     private void setIcon(){
         IconFactory iconFactory = IconFactory.getInstance(this);
         Icon peny_marker;
@@ -398,12 +429,6 @@ public class MapActivity extends AppCompatActivity implements
     public void onPause() {
         super.onPause();
         mapView.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mapView.onStop();
     }
 
     @Override
