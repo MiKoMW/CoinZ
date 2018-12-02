@@ -1,6 +1,7 @@
 package io.github.mikomw.coinz.ui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -140,6 +141,10 @@ public class MapActivity extends AppCompatActivity implements
 
             System.out.println("Guide Sellected");
 
+            Intent intent = new Intent(this, WelcomeGuideActivity.class);
+            startActivity(intent);
+            this.finish();
+
         } else if (id == R.id.nav_setting) {
             System.out.println("setting sellected;");
 
@@ -182,7 +187,6 @@ public class MapActivity extends AppCompatActivity implements
 
     private void initUserView(){
         userNickName.setText(user.getNickName());
-        System.out.println(user.getNickName());
 
     }
 

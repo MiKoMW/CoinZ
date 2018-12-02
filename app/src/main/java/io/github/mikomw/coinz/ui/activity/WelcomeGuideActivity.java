@@ -147,6 +147,14 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
 
 
     private void enterMainActivity() {
+        boolean isFirstOpen = SharedPreferencesUtil.getBoolean(this, SharedPreferencesUtil.FIRST_OPEN, true);
+
+        if(!isFirstOpen){
+            Intent intent = new Intent(this,
+                    MapActivity.class);
+            startActivity(intent);
+        }
+
         Intent intent = new Intent(WelcomeGuideActivity.this,
                 WelcomeActivity.class);
         startActivity(intent);
