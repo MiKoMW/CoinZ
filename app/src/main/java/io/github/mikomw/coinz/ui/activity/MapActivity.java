@@ -143,8 +143,8 @@ public class MapActivity extends AppCompatActivity implements
             System.out.println("Guide Sellected");
 
             Intent intent = new Intent(this, WelcomeGuideActivity.class);
-            startActivity(intent);
-            this.finish();
+            //startActivity(intent);
+            startActivityForResult(intent,0);
 
         } else if (id == R.id.nav_setting) {
             System.out.println("setting sellected;");
