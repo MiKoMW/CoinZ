@@ -156,9 +156,8 @@ public class MapActivity extends AppCompatActivity implements
             System.out.println("setting sellected;");
             saveData();
 
-            //Intent intent = new Intent(this, SettingsActivity.class);
-            //startActivity(intent);
-            //startActivityForResult(intent,0);
+            Intent intent = new Intent(this, SettingActivity.class);
+            startActivityForResult(intent,0);
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;

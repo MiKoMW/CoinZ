@@ -16,6 +16,7 @@ import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
 import io.github.mikomw.coinz.R;
+import io.github.mikomw.coinz.util.coinHelper;
 
 public class SettingActivity extends AppCompatActivity {
     String tag = "SettingActivity";
@@ -44,6 +45,55 @@ public class SettingActivity extends AppCompatActivity {
                 finish();
             }
         });
+        mGroupListView=findViewById(R.id.group_list_setting);
+
+
+        QMUICommonListItemView account_setting = mGroupListView.createItemView("Account and Security");
+        account_setting.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
+
+        QMUICommonListItemView language_setting = mGroupListView.createItemView("Language");
+        language_setting.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
+        QMUIGroupListView.newSection(this)
+                .addItemView(account_setting,null)
+                .addItemView(language_setting,null)
+                .addTo(mGroupListView);
+
+        QMUICommonListItemView perference_setting = mGroupListView.createItemView("Preference");
+        perference_setting.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
+
+        QMUIGroupListView.newSection(this)
+                .addItemView(perference_setting,null)
+                .addTo(mGroupListView);
+
+        QMUICommonListItemView accessible_mode_setting = mGroupListView.createItemView("Accessible Mode");
+        accessible_mode_setting.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_SWITCH);
+        accessible_mode_setting.setDetailText("Enable color blind mode.");
+
+        QMUICommonListItemView enlarge_text_mode_setting = mGroupListView.createItemView("Enlarge Text Mode");
+        enlarge_text_mode_setting.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_SWITCH);
+
+        QMUIGroupListView.newSection(this)
+                .addItemView(accessible_mode_setting,null)
+                .addItemView(enlarge_text_mode_setting,null)
+                .addTo(mGroupListView);
+
+        QMUICommonListItemView ratting_setting = mGroupListView.createItemView("Rating CoinZ!");
+        ratting_setting.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
+        QMUIGroupListView.newSection(this)
+                .addItemView(ratting_setting,null)
+                .addTo(mGroupListView);
+
+        QMUICommonListItemView legal_setting = mGroupListView.createItemView("Terms and Conditions");
+        legal_setting.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
+        QMUICommonListItemView about_setting = mGroupListView.createItemView("About");
+        about_setting.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
+        QMUIGroupListView.newSection(this)
+                .addItemView(legal_setting,null)
+                .addItemView(about_setting,null)
+                .addTo(mGroupListView);
+
 
     }
+
+
 }
