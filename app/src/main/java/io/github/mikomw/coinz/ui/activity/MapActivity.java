@@ -138,9 +138,15 @@ public class MapActivity extends AppCompatActivity implements
 
         if (id == R.id.nav_wallet) {
             System.out.println("Wallet Sellected");
+            saveData();
+
+            Intent intent = new Intent(this, WalletActivity.class);
+            //startActivity(intent);
+            startActivityForResult(intent,0);
         } else if (id == R.id.nav_guide) {
 
             System.out.println("Guide Sellected");
+            saveData();
 
             Intent intent = new Intent(this, WelcomeGuideActivity.class);
             //startActivity(intent);
@@ -148,7 +154,11 @@ public class MapActivity extends AppCompatActivity implements
 
         } else if (id == R.id.nav_setting) {
             System.out.println("setting sellected;");
+            saveData();
 
+            //Intent intent = new Intent(this, SettingsActivity.class);
+            //startActivity(intent);
+            //startActivityForResult(intent,0);
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -463,13 +473,7 @@ public class MapActivity extends AppCompatActivity implements
                     if(thistime - lastUpdateTime >= 60000 || (coinCollected - lastCoinCollected) >= 5){
                         lastUpdateTime = thistime;
                         lastCoinCollected = coinCollected;
-
-                        SerializableManager.saveSerializable(this,todayCollectedID,"todayCollectedCoinID.data");
-                        SerializableManager.saveSerializable(this,CollectedCoins,"collectedCoin.data");
-
-                        uploadUserData uploadUserData = new uploadUserData(this);
-                        uploadUserData.execute(this.Uid);
-                        System.out.println(Uid);
+                        saveData();
                     }
 
                 }
@@ -477,6 +481,16 @@ public class MapActivity extends AppCompatActivity implements
         }
 
         // Coin collected.
+
+    }
+
+    public void saveData(){
+        SerializableManager.saveSerializable(this,todayCollectedID,"todayCollectedCoinID.data");
+        SerializableManager.saveSerializable(this,CollectedCoins,"collectedCoin.data");
+
+        uploadUserData uploadUserData = new uploadUserData(this);
+        uploadUserData.execute(this.Uid);
+        System.out.println(Uid);
 
     }
 
