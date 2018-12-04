@@ -62,7 +62,7 @@ import io.github.mikomw.coinz.util.uploadUserData;
 
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback, LocationEngineListener,
-        PermissionsListener, NavigationView.OnNavigationItemSelectedListener{
+       PermissionsListener, NavigationView.OnNavigationItemSelectedListener{
 
     String tag = "MapActivity";
     private MapView mapView;
@@ -159,7 +159,7 @@ public class MapActivity extends AppCompatActivity implements
 
                 }
         });
-
+        //initUserView();
     }
 
 

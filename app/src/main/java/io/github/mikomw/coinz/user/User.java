@@ -86,6 +86,10 @@ public class User implements Serializable {
         this.balance = ans;
     }
 
+    public String getUID(){
+        return this.UID;
+    }
+
     public void setFriendUIDList(List<String> friendUIDList) {
         this.friendUIDList = friendUIDList;
     }
