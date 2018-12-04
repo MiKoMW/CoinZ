@@ -48,6 +48,10 @@ public class User implements Serializable {
         this.today_sale = today_sale + 1;
     }
 
+    public int getToday_sale(){
+        return today_sale;
+    }
+
     public boolean isUpdated(String date){
         return this.lastUpdateDate.equals(date);
     }

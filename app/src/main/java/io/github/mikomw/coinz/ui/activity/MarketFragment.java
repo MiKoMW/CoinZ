@@ -17,7 +17,9 @@ import java.util.List;
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.db.ExchangeRate;
 import io.github.mikomw.coinz.db.rateDBOperator;
+import io.github.mikomw.coinz.user.User;
 import io.github.mikomw.coinz.util.Date;
+import io.github.mikomw.coinz.util.SerializableManager;
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
@@ -75,7 +77,8 @@ public class MarketFragment extends Fragment {
     float [] score;
     private List<PointValue> mPointValues = new ArrayList<PointValue>();
     private List<AxisValue> mAxisXValues = new ArrayList<AxisValue>();
-
+    User user;
+    TextView havePaied;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +86,7 @@ public class MarketFragment extends Fragment {
         if (getArguments() != null) {
             thisCurrency = getArguments().getString(ARG_PARAM1);
         }
+        user = SerializableManager.readSerializable(getContext(),"userInfo.data");
 
 
     }
@@ -117,6 +121,7 @@ public class MarketFragment extends Fragment {
         date=new String[months.size()];
         score=new float[months.size()];
         int con = 0;
+
 
         for(String day : months){
             ExchangeRate exchangeRate = rateDBOperator.queryOne(day);
@@ -177,8 +182,16 @@ public class MarketFragment extends Fragment {
 
         }
 
+        havePaied = root.findViewById(R.id.market_havepaied);
+        updatePage();
+
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updatePage();
+    }
 
     @Override
     public void onDetach() {
@@ -269,6 +282,9 @@ public class MarketFragment extends Fragment {
         }
     }
 
+    private void updatePage(){
+        havePaied.setText("You can pay in " +  (25 - user.getToday_sale()) + " more collected coins");
+    }
 
 
 }
