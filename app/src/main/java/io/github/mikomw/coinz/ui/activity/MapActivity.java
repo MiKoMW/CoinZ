@@ -186,7 +186,7 @@ public class MapActivity extends AppCompatActivity implements
             startActivityForResult(intent,0);
 
         } else if (id == R.id.nav_setting) {
-            System.out.println("setting sellected;");
+            System.out.println("setting selected;");
             saveData();
 
             Intent intent = new Intent(this, SettingActivity.class);
