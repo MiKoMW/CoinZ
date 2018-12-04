@@ -115,6 +115,8 @@ public class MapActivity extends AppCompatActivity implements
         toolbar.setNavigationIcon(R.drawable.account);
         toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.menu));
 
+
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         //设置navigationview的menu监听
         navigationView.setNavigationItemSelectedListener(this);
@@ -353,7 +355,22 @@ public class MapActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_explore) {
+            System.out.println("Explore");
+            return true;
+        }
+
+        if (id == R.id.action_market) {
+            Intent intent = new Intent(this, WalletActivity.class);
+            System.out.println("Market");
+            //startActivity(intent);
+            return true;
+        }
+
+        if (id == R.id.action_friend) {
+            System.out.println("Friend");
+            Intent intent = new Intent(this, WalletActivity.class);
+            //startActivity(intent);
             return true;
         }
 

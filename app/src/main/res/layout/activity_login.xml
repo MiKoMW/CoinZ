@@ -152,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_marginBottom="10dp"
-                    android:text="注册新用户"
+                    android:text="Register as new user"
                     android:layout_weight="1"
                     android:textColor="@color/color_b0b8b2"
                     android:textSize="14dp" />

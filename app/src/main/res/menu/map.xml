@@ -2,8 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_explore"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Explore"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_market"
+        android:orderInCategory="100"
+        android:title="Market"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_friend"
+        android:orderInCategory="100"
+        android:title="Friend"
         app:showAsAction="never" />
 </menu>
