@@ -108,6 +108,7 @@ public class MarketActivity extends AppCompatActivity implements
                  * 要注意的是，所有的回调和相关的行为都会在这个调用中被执行完成，因此要仔细确认这个方法的调用位置。
                  */
                 fragmentManager.executePendingTransactions();
+
             }
 
 
@@ -143,6 +144,7 @@ public class MarketActivity extends AppCompatActivity implements
         mPages = new HashMap<>();
 
 
+
         mPages.put(Pager.PENY, MarketFragment.newInstance("PENY"));
         mPages.put(Pager.DOLR, MarketFragment.newInstance("DOLR"));
         mPages.put(Pager.SHIL, MarketFragment.newInstance("SHIL"));
@@ -150,6 +152,8 @@ public class MarketActivity extends AppCompatActivity implements
 
         mContentViewPager.setAdapter(adapter);
         mTabSegment.setupWithViewPager(mContentViewPager, false);
+
+
     }
 
 

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.mikomw.coinz.coin.Coin;
+import io.github.mikomw.coinz.util.Date;
 
 public class User implements Serializable {
 
@@ -13,6 +13,8 @@ public class User implements Serializable {
     private String email;
     private Double balance;
     private List<String> friendUIDList;
+    private String lastUpdateDate;
+    private int today_sale;
 
     public User(String uid, String nickName, String email,Double balance,List<String> friendUIDList){
         this.UID = uid;
@@ -20,6 +22,8 @@ public class User implements Serializable {
         this.email = email;
         this.balance = balance;
         this.friendUIDList = friendUIDList;
+        lastUpdateDate = Date.getDateInfo().today;
+        today_sale = 0;
     }
 
     public User(String uid){
@@ -28,6 +32,28 @@ public class User implements Serializable {
         this.email = "";
         this.balance = 0.0;
         this.friendUIDList = new ArrayList<>();
+        lastUpdateDate = Date.getDateInfo().today;
+        today_sale = 0;
+    }
+
+    public boolean ableToSale(){
+        return today_sale < 25;
+    }
+
+    public void resetSale(){
+        this.today_sale = 0;
+    }
+
+    public void sale_coin(){
+        this.today_sale = today_sale + 1;
+    }
+
+    public boolean isUpdated(String date){
+        return this.lastUpdateDate.equals(date);
+    }
+
+    public void setLastUpdateDate(String date){
+        this.lastUpdateDate = date;
     }
 
     public String toString() {
@@ -53,6 +79,13 @@ public class User implements Serializable {
         return (this.UID.equals(user.UID));
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 
 
     public int hashCode () {
