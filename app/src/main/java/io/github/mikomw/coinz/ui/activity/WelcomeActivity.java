@@ -226,6 +226,7 @@ public class WelcomeActivity extends Activity {
             super.onPostExecute(result);
             IO.writeToFile(this.weakActivity.get().getFilesDir().getPath(),"todayMap.geojson",result);
 
+            System.out.println(result);
             ArrayList<Coin> todaycoins = new ArrayList<>();
             try {
                 FeatureCollection coins = FeatureCollection.fromJson(result);

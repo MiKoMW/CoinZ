@@ -383,8 +383,8 @@ public class MarketActivity extends AppCompatActivity implements
 
         if (id == R.id.action_friend) {
             System.out.println("Friend");
-            Intent intent = new Intent(this, WalletActivity.class);
-            //startActivity(intent);
+            Intent intent = new Intent(this, FriendActivity.class);
+            startActivity(intent);
             return true;
         }
 

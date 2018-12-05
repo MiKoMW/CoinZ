@@ -244,8 +244,6 @@ public class MapActivity extends AppCompatActivity implements
     private void initUserView(){
         UidTextView.setText(user.getUID());
         userNickName.setText(user.getNickName());
-
-
     }
 
 
@@ -375,8 +373,8 @@ public class MapActivity extends AppCompatActivity implements
 
         if (id == R.id.action_friend) {
             System.out.println("Friend");
-            Intent intent = new Intent(this, WalletActivity.class);
-            //startActivity(intent);
+            Intent intent = new Intent(this, FriendActivity.class);
+            startActivity(intent);
             saveData();
             return true;
         }

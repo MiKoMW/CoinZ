@@ -12,16 +12,16 @@ public class User implements Serializable {
     private String NickName;
     private String email;
     private Double balance;
-    private List<String> friendUIDList;
+    private List<Friends> friendList;
     private String lastUpdateDate;
     private int today_sale;
 
-    public User(String uid, String nickName, String email,Double balance,List<String> friendUIDList){
+    public User(String uid, String nickName, String email,Double balance,List<Friends> friendList){
         this.UID = uid;
         this.NickName = nickName;
         this.email = email;
         this.balance = balance;
-        this.friendUIDList = friendUIDList;
+        this.friendList = friendList;
         lastUpdateDate = Date.getDateInfo().today;
         today_sale = 0;
     }
@@ -31,7 +31,7 @@ public class User implements Serializable {
         this.NickName = uid;
         this.email = "";
         this.balance = 0.0;
-        this.friendUIDList = new ArrayList<>();
+        this.friendList = new ArrayList<>();
         lastUpdateDate = Date.getDateInfo().today;
         today_sale = 0;
     }
@@ -127,20 +127,20 @@ public class User implements Serializable {
         return this.UID;
     }
 
-    public void setFriendUIDList(List<String> friendUIDList) {
-        this.friendUIDList = friendUIDList;
+    public void setFriendList(List<Friends> friendList) {
+        this.friendList = friendList;
     }
 
-    public List<String> getFriendUIDList() {
-        return friendUIDList;
+    public List<Friends> getFriendUIDList() {
+        return friendList;
     }
 
-    public void addFriend(String friend){
-        this.friendUIDList.add(friend);
+    public void addFriend(Friends friend){
+        this.friendList.add(friend);
     }
 
-    public void removeFriend(String friend){
-        this.friendUIDList.remove(friend);
+    public void removeFriend(Friends friend){
+        this.friendList.remove(friend);
     }
 
 }
