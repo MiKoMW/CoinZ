@@ -361,9 +361,10 @@ public class MapActivity extends AppCompatActivity implements
         }
 
         if (id == R.id.action_market) {
-            Intent intent = new Intent(this, WalletActivity.class);
+            Intent intent = new Intent(this, MarketActivity.class);
             System.out.println("Market");
-            //startActivity(intent);
+            saveData();
+            startActivity(intent);
             return true;
         }
 
@@ -371,6 +372,7 @@ public class MapActivity extends AppCompatActivity implements
             System.out.println("Friend");
             Intent intent = new Intent(this, WalletActivity.class);
             //startActivity(intent);
+            saveData();
             return true;
         }
 

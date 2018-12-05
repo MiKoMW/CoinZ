@@ -74,26 +74,69 @@ public class displayCoinActivity extends AppCompatActivity {
 
         mGroupListView=findViewById(R.id.group_list_coin_display);
 
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v instanceof QMUICommonListItemView) {
+
+                    QMUICommonListItemView viewList = (QMUICommonListItemView) v;
+                    System.out.println(viewList.getDetailText());
+                    CharSequence text = ((QMUICommonListItemView) v).getText();
+                    int thisid = viewList.getId();
+                    System.out.println(thisid);
+                    if(text.toString().contains("Spare")){
+                        System.out.println(spareChange.get(thisid));
+                        Intent intent = new Intent();
+                        intent.putExtra("result", spareChange.get(thisid));
+                        intent.putExtra("collected", false);
+
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+
+                    if(text.toString().contains("Collected")){
+                        System.out.println(collectedCoin.get(thisid));
+                        Intent intent = new Intent();
+                        intent.putExtra("result", collectedCoin.get(thisid));
+                        intent.putExtra("collected", true);
+
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+
+                    System.out.println(text);
+                }
+            }
+        };
+
+
         QMUIGroupListView.Section newSection = QMUIGroupListView.newSection(this);
         newSection.setTitle("Collected Coins");
 
+        int con = 0;
         for(Coin coin : collectedCoin){
-            QMUICommonListItemView temp = mGroupListView.createItemView(coin.getCurrency());
+            QMUICommonListItemView temp = mGroupListView.createItemView("Collected Coin: " + con);
+            temp.setId(con);
             temp.setDetailText(coin.getValue() + "");
-            newSection.addItemView(temp,null);
+            newSection.addItemView(temp,onClickListener);
+            con++;
         }
         newSection.addTo(mGroupListView);
 
         QMUIGroupListView.Section spareSection = QMUIGroupListView.newSection(this);
         spareSection.setTitle("Sparechange Coins");
 
+
+        con = 0;
         for(Coin coin : spareChange){
-            QMUICommonListItemView temp = mGroupListView.createItemView(coin.getCurrency());
+            QMUICommonListItemView temp = mGroupListView.createItemView("Collected Coin: " + con);
+            temp.setId(con);
             temp.setDetailText(coin.getValue() + "");
-            spareSection.addItemView(temp,null);
+            spareSection.addItemView(temp,onClickListener);
+            con++;
         }
         spareSection.addTo(mGroupListView);
-
 
 
     }
@@ -103,6 +146,13 @@ public class displayCoinActivity extends AppCompatActivity {
         super.onStart();
     }
 
+    @Override
+    public void onBackPressed() {
+        System.out.println("Click");
+        Intent intent = new Intent();
+        setResult(RESULT_OK,intent);
+        finish();
+        super.onBackPressed();
 
-
+    }
 }

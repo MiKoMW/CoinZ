@@ -364,11 +364,13 @@ public class MarketActivity extends AppCompatActivity implements
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_explore) {
             System.out.println("Explore");
+            Intent intent = new Intent(this, MapActivity.class);
+            startActivity(intent);
+            System.out.println("Explore");
             return true;
         }
 
         if (id == R.id.action_market) {
-            Intent intent = new Intent(this, WalletActivity.class);
             System.out.println("Market");
             //startActivity(intent);
             return true;

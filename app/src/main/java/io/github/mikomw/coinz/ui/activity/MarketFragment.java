@@ -1,5 +1,6 @@
 package io.github.mikomw.coinz.ui.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,19 +8,25 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.github.mikomw.coinz.R;
+import io.github.mikomw.coinz.coin.Coin;
 import io.github.mikomw.coinz.db.ExchangeRate;
 import io.github.mikomw.coinz.db.rateDBOperator;
 import io.github.mikomw.coinz.user.User;
 import io.github.mikomw.coinz.util.Date;
 import io.github.mikomw.coinz.util.SerializableManager;
+import io.github.mikomw.coinz.util.uploadUserData;
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
@@ -79,6 +86,12 @@ public class MarketFragment extends Fragment {
     private List<AxisValue> mAxisXValues = new ArrayList<AxisValue>();
     User user;
     TextView havePaied;
+    ArrayList<Coin> collectedCoin;
+    ArrayList<Coin> spareChange;
+    Coin current_coin;
+    Boolean current_isCollected;
+    TextView cur_coin_value_textview;
+    TextView cur_coin_gold_textview;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,6 +101,8 @@ public class MarketFragment extends Fragment {
         }
         user = SerializableManager.readSerializable(getContext(),"userInfo.data");
 
+        spareChange = SerializableManager.readSerializable(getContext(),"spareChange.data");
+        collectedCoin = SerializableManager.readSerializable(getContext(),"collectedCoin.data");
 
     }
 
@@ -97,7 +112,8 @@ public class MarketFragment extends Fragment {
         // Inflate the layout for this fragment
 
         root = inflater.inflate(R.layout.fragment_market2, container, false);
-
+        cur_coin_value_textview = root.findViewById(R.id.market_coinvalue);
+        cur_coin_gold_textview = root.findViewById(R.id.market_coldvalue);
         return root;
     }
 
@@ -125,7 +141,7 @@ public class MarketFragment extends Fragment {
 
         for(String day : months){
             ExchangeRate exchangeRate = rateDBOperator.queryOne(day);
-            date[con] = exchangeRate.getDate();
+            date[con] = day;
             switch (thisCurrency){
                 case "PENY":
                     score[con] = (float) exchangeRate.getPENY();
@@ -185,6 +201,23 @@ public class MarketFragment extends Fragment {
         havePaied = root.findViewById(R.id.market_havepaied);
         updatePage();
 
+        Button select_coin = root.findViewById(R.id.market_selectcoin);
+        select_coin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                jumpToView(thisCurrency);
+            }
+        });
+
+        Button makedeal_button = root.findViewById(R.id.market_deal);
+        makedeal_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeDeal();
+            }
+        });
+
+        updatePage();
     }
 
     @Override
@@ -267,11 +300,8 @@ public class MarketFragment extends Fragment {
 
 
     private void getAxisXLables(){
-        System.out.println(date.length);
-        System.out.println(mAxisXValues);
 
         for (int i = 0; i < date.length; i++) {
-            System.out.println(date[i]);
             mAxisXValues.add(new AxisValue(i).setLabel(date[i]));
         }
     }
@@ -283,8 +313,120 @@ public class MarketFragment extends Fragment {
     }
 
     private void updatePage(){
+
+        if(!user.isUpdated(Date.getDateInfo().today)){
+            System.out.println("User is not upadted!");
+            user.resetSale();
+            user.setLastUpdateDate(Date.getDateInfo().today);
+        }
+
+
         havePaied.setText("You can pay in " +  (25 - user.getToday_sale()) + " more collected coins");
+        if(current_coin!=null){
+            cur_coin_value_textview.setText(current_coin.getValue() + "");
+            cur_coin_gold_textview.setText((current_coin.getValue() * score[0]) + "");
+        }else{
+            cur_coin_value_textview.setText("Select a coin");
+            cur_coin_gold_textview.setText("Select a coin");
+
+        }
     }
+
+    public void saveData(){
+        SerializableManager.saveSerializable(getContext(),user,"userInfo.data");
+        SerializableManager.saveSerializable(getContext(),collectedCoin,"collectedCoin.data");
+        SerializableManager.saveSerializable(getContext(),spareChange,"spareChange.data");
+
+        uploadUserData uploadUserData = new uploadUserData(getActivity());
+        uploadUserData.execute(user.getUID());
+
+    }
+
+    public void jumpToView(String currency){
+
+
+        ArrayList<Coin> temp_collectCoin = new ArrayList<>();
+        ArrayList<Coin> temp_spareChange = new ArrayList<>();
+        Intent intent = new Intent();
+
+        for(Coin coin:collectedCoin){
+            if(coin.getCurrency().equals(currency)){
+                temp_collectCoin.add(coin);
+            }
+        }
+        for(Coin coin:spareChange){
+            if(coin.getCurrency().equals(currency)){
+                temp_spareChange.add(coin);
+            }
+        }
+
+        intent.setClass(getContext(), displayCoinActivity.class);
+        intent.putExtra("collectCoin", (ArrayList<Coin>) temp_collectCoin);
+        intent.putExtra("spareChange", (ArrayList<Coin>) temp_spareChange);
+        intent.putExtra("currency",currency);
+        startActivityForResult(intent,0);
+
+    }
+
+
+
+    /**
+     * 为了得到传回的数据，必须在前面的Activity中（指MainActivity类）重写onActivityResult方法
+     *
+     * requestCode 请求码，即调用startActivityForResult()传递过去的值
+     * resultCode 结果码，结果码用于标识返回数据来自哪个新Activity
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(!data.hasExtra("result")){
+            return;
+        }
+        current_coin = (Coin) data.getExtras().get("result");//得到新Activity 关闭后返回的数据
+        current_isCollected = data.getExtras().getBoolean("collected");
+        System.out.println(current_isCollected);
+        System.out.println(current_coin);
+        updatePage();
+    }
+
+    public void makeDeal(){
+
+        if(current_coin == null){
+            Toast.makeText(getContext(), "You need a select a coin to make the deal!",
+                    Toast.LENGTH_SHORT).show();
+            System.out.println("have not selected a coin!");
+            return;
+        }
+
+        if(current_isCollected && user.getToday_sale() == 25){
+            System.out.println("IsCollected");
+            Toast.makeText(getContext(), "You can only pay 25 collected coins a day!",
+                    Toast.LENGTH_SHORT).show();
+
+        }
+
+        if(current_isCollected) {
+            collectedCoin.remove(current_coin);
+            user.addBalance(current_coin.getValue() * score[0]);
+            user.sale_coin();
+            current_coin = null;
+            updatePage();
+            saveData();
+            return;
+        }
+
+        if(!current_isCollected) {
+            spareChange.remove(current_coin);
+            user.addBalance(current_coin.getValue() * score[0]);
+            current_coin = null;
+            updatePage();
+            saveData();
+            return;
+        }
+
+
+    }
+
 
 
 }
