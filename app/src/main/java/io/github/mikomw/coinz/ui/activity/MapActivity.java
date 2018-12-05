@@ -81,7 +81,7 @@ public class MapActivity extends AppCompatActivity implements
     int lastCoinCollected;
     String Uid;
     User user;
-
+    TextView UidTextView;
     TextView userNickName;
     ImageView avater;
     DrawerLayout drawer;
@@ -130,6 +130,8 @@ public class MapActivity extends AppCompatActivity implements
 
         View headerView = navigationView.getHeaderView(0);
         userNickName = headerView.findViewById(R.id.drawer_NikeName);
+        UidTextView = headerView.findViewById(R.id.drawer_email);
+
         userNickName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,6 +161,7 @@ public class MapActivity extends AppCompatActivity implements
 
                 }
         });
+
         //initUserView();
     }
 
@@ -239,7 +242,9 @@ public class MapActivity extends AppCompatActivity implements
     };
 
     private void initUserView(){
+        UidTextView.setText(user.getUID());
         userNickName.setText(user.getNickName());
+
 
     }
 

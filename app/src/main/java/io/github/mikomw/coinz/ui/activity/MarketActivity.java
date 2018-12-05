@@ -82,6 +82,8 @@ public class MarketActivity extends AppCompatActivity implements
     String Uid;
     User user;
 
+    TextView UidTextView;
+
     TextView userNickName;
     ImageView avater;
     DrawerLayout drawer;
@@ -210,6 +212,7 @@ public class MarketActivity extends AppCompatActivity implements
         //userName.setText(Uid);
         View headerView = navigationView.getHeaderView(0);
         userNickName = headerView.findViewById(R.id.drawer_NikeName);
+        UidTextView = headerView.findViewById(R.id.drawer_email);
         userNickName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -345,6 +348,7 @@ public class MarketActivity extends AppCompatActivity implements
     }
 
     private void initUserView(){
+        UidTextView.setText(user.getUID());
         userNickName.setText(user.getNickName());
     }
 
@@ -365,6 +369,7 @@ public class MarketActivity extends AppCompatActivity implements
         if (id == R.id.action_explore) {
             System.out.println("Explore");
             Intent intent = new Intent(this, MapActivity.class);
+            intent.putExtra("Uid",Uid);
             startActivity(intent);
             System.out.println("Explore");
             return true;
