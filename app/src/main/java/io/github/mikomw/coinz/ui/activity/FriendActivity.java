@@ -55,9 +55,6 @@ import io.github.mikomw.coinz.user.User;
 import io.github.mikomw.coinz.util.SerializableManager;
 import io.github.mikomw.coinz.util.uploadUserData;
 
-
-
-
 public class FriendActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 

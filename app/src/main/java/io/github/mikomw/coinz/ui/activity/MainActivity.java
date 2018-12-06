@@ -40,6 +40,7 @@ import io.github.mikomw.coinz.util.deleteUserData;
 import io.github.mikomw.coinz.util.downloadUserData;
 import io.github.mikomw.coinz.util.uploadUserData;
 
+// This activity is for temporary testing purpose.
 public class MainActivity extends AppCompatActivity {
 
     @Override

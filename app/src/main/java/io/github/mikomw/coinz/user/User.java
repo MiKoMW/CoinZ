@@ -13,8 +13,10 @@ public class User implements Serializable {
     private String email;
     private Double balance;
     private List<Friends> friendList;
-    private String lastUpdateDate;
+    private String lastPayUpdateDate;
     private int today_sale;
+    private String lastCollectedUpdateDate;
+
 
     public User(String uid, String nickName, String email,Double balance,List<Friends> friendList){
         this.UID = uid;
@@ -22,7 +24,8 @@ public class User implements Serializable {
         this.email = email;
         this.balance = balance;
         this.friendList = friendList;
-        lastUpdateDate = Date.getDateInfo().today;
+        lastPayUpdateDate = Date.getDateInfo().today;
+        lastCollectedUpdateDate = Date.getDateInfo().today;
         today_sale = 0;
     }
 
@@ -32,7 +35,8 @@ public class User implements Serializable {
         this.email = "";
         this.balance = 0.0;
         this.friendList = new ArrayList<>();
-        lastUpdateDate = Date.getDateInfo().today;
+        lastPayUpdateDate = Date.getDateInfo().today;
+        lastCollectedUpdateDate = Date.getDateInfo().today;
         today_sale = 0;
     }
 
@@ -53,11 +57,11 @@ public class User implements Serializable {
     }
 
     public boolean isUpdated(String date){
-        return this.lastUpdateDate.equals(date);
+        return this.lastPayUpdateDate.equals(date);
     }
 
-    public void setLastUpdateDate(String date){
-        this.lastUpdateDate = date;
+    public void setLastPayUpdateDate(String date){
+        this.lastPayUpdateDate = date;
     }
 
     public String toString() {
@@ -143,4 +147,11 @@ public class User implements Serializable {
         this.friendList.remove(friend);
     }
 
+    public String getLastCollectedUpdateDate(){
+        return this.lastCollectedUpdateDate;
+    }
+
+    public void setLastCollectedUpdateDate(String lastCollectedUpdateDate) {
+        this.lastCollectedUpdateDate = lastCollectedUpdateDate;
+    }
 }

@@ -5,26 +5,18 @@ import android.os.Bundle;
 
 import io.github.mikomw.coinz.R;
 
-
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.coin.Coin;
-import io.github.mikomw.coinz.user.User;
-import io.github.mikomw.coinz.util.SerializableManager;
-import io.github.mikomw.coinz.util.coinHelper;
+
 
 public class displayCoinActivity extends AppCompatActivity {
 
@@ -43,10 +35,14 @@ public class displayCoinActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_display_coin);
+
+        // Check which currency are we going to display.
         currency = getIntent().getStringExtra("currency");
 
+        Log.d(tag,"Display coins activity with " + currency);
+
+        // Initialize the action bar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.display_coin_bar);
         toolbar.setTitle("My " + currency);
         setSupportActionBar(toolbar);
@@ -65,52 +61,55 @@ public class displayCoinActivity extends AppCompatActivity {
             }
         });
 
-        collectedCoin =  (ArrayList<Coin>) getIntent().getSerializableExtra("collectCoin");
-        spareChange =  (ArrayList<Coin>) getIntent().getSerializableExtra("spareChange");
+        // Get the coins passing by the previous activity.
+        collectedCoin = (ArrayList<Coin>) getIntent().getSerializableExtra("collectCoin");
+        spareChange = (ArrayList<Coin>) getIntent().getSerializableExtra("spareChange");
 
-        System.out.println(collectedCoin.size());
+        Log.d(tag,"The collected coin size is: " + collectedCoin.size());
+        Log.d(tag,"The spareChange coin size is: " + spareChange.size());
 
-        toolbar.setTitle("My " + currency);
-
+        // Initialize the list view.
         mGroupListView=findViewById(R.id.group_list_coin_display);
 
-
+        // Create a onclick listener for the list view.
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v instanceof QMUICommonListItemView) {
 
                     QMUICommonListItemView viewList = (QMUICommonListItemView) v;
-                    System.out.println(viewList.getDetailText());
+                    Log.d(tag, "Coin selected with value " + viewList.getDetailText().toString());
                     CharSequence text = ((QMUICommonListItemView) v).getText();
-                    int thisid = viewList.getId();
-                    System.out.println(thisid);
+                    int this_coinid = viewList.getId();
+                    System.out.println(this_coinid);
                     if(text.toString().contains("Spare")){
-                        System.out.println(spareChange.get(thisid));
+                        Log.d(tag, "Coin selected ：" + spareChange.get(this_coinid));
                         Intent intent = new Intent();
-                        intent.putExtra("result", spareChange.get(thisid));
+                        intent.putExtra("result", spareChange.get(this_coinid));
                         intent.putExtra("collected", false);
 
+                        // Pass the coin back to the calling activity.
                         setResult(RESULT_OK, intent);
                         finish();
                     }
 
                     if(text.toString().contains("Collected")){
-                        System.out.println(collectedCoin.get(thisid));
+                        Log.d(tag, "Coin selected ：" + collectedCoin.get(this_coinid));
                         Intent intent = new Intent();
-                        intent.putExtra("result", collectedCoin.get(thisid));
+                        intent.putExtra("result", collectedCoin.get(this_coinid));
                         intent.putExtra("collected", true);
 
+                        // Pass the coin back to the calling activity.
                         setResult(RESULT_OK, intent);
                         finish();
                     }
 
-                    System.out.println(text);
                 }
             }
         };
 
 
+        // Initialize the list view.
         QMUIGroupListView.Section newSection = QMUIGroupListView.newSection(this);
         newSection.setTitle("Collected Coins");
 
@@ -130,14 +129,13 @@ public class displayCoinActivity extends AppCompatActivity {
 
         con = 0;
         for(Coin coin : spareChange){
-            QMUICommonListItemView temp = mGroupListView.createItemView("Collected Coin: " + con);
+            QMUICommonListItemView temp = mGroupListView.createItemView("Spare Coin: " + con);
             temp.setId(con);
             temp.setDetailText(coin.getValue() + "");
             spareSection.addItemView(temp,onClickListener);
             con++;
         }
         spareSection.addTo(mGroupListView);
-
 
     }
 

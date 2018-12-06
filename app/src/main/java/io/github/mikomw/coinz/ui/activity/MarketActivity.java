@@ -1,11 +1,8 @@
 package io.github.mikomw.coinz.ui.activity;
 
 
-import android.app.Fragment;
-import android.arch.lifecycle.Lifecycle;
-import android.content.Context;
+
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -21,29 +18,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mapbox.android.core.location.LocationEngine;
-import com.mapbox.android.core.location.LocationEngineListener;
-import com.mapbox.android.core.location.LocationEnginePriority;
-import com.mapbox.android.core.location.LocationEngineProvider;
-import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.Icon;
-import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 
 import com.qmuiteam.qmui.widget.QMUITabSegment;
@@ -57,7 +40,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import butterknife.BindView;
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.coin.Coin;
 import io.github.mikomw.coinz.user.User;
@@ -65,20 +47,11 @@ import io.github.mikomw.coinz.util.SerializableManager;
 import io.github.mikomw.coinz.util.uploadUserData;
 
 
-
-
 public class MarketActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener{
 
     String tag = "MarketActivity";
-    private PermissionsManager permissionsManager;
 
-    ArrayList<Coin> todayCoins;
-    HashMap<String,Marker> todayIcons;
-
-    //=================================================这个以后得改
-    HashSet<String> todayCollectedID;
-    ArrayList<Coin> CollectedCoins;
     String Uid;
     User user;
 
@@ -115,7 +88,7 @@ public class MarketActivity extends AppCompatActivity implements
 
 
             if (fragment.getView().getParent() == null) {
-                container.addView(fragment.getView()); // 为viewpager增加布局
+                container.addView(fragment.getView());  // Get view for viewpager.
             }
             return fragment.getView();
         }
@@ -137,7 +110,7 @@ public class MarketActivity extends AppCompatActivity implements
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(mPages.get(Pager.getPagerFromPositon(position)).getView()); // 移出viewpager两边之外的page布局
+            container.removeView(mPages.get(Pager.getPagerFromPositon(position)).getView()); // remove the layout of other pages.
         }
     };
 
@@ -145,8 +118,7 @@ public class MarketActivity extends AppCompatActivity implements
     private void initPagers() {
         mPages = new HashMap<>();
 
-
-
+        // Set pages for for currency.
         mPages.put(Pager.PENY, MarketFragment.newInstance("PENY"));
         mPages.put(Pager.DOLR, MarketFragment.newInstance("DOLR"));
         mPages.put(Pager.SHIL, MarketFragment.newInstance("SHIL"));
@@ -155,9 +127,7 @@ public class MarketActivity extends AppCompatActivity implements
         mContentViewPager.setAdapter(adapter);
         mTabSegment.setupWithViewPager(mContentViewPager, false);
 
-
     }
-
 
     enum Pager {
         PENY, DOLR , SHIL, QUID;
@@ -179,16 +149,13 @@ public class MarketActivity extends AppCompatActivity implements
     }
 
 
-
-
         @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market);
 
+        // Initialize the tool bar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -201,15 +168,13 @@ public class MarketActivity extends AppCompatActivity implements
         toolbar.setNavigationIcon(R.drawable.account);
         toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.menu));
 
-
-
+        // Initialize the navigation view.
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        //设置navigationview的menu监听
+        // Set listener.
         navigationView.setNavigationItemSelectedListener(this);
 
 
         Uid = getIntent().getStringExtra("Uid");
-        //userName.setText(Uid);
         View headerView = navigationView.getHeaderView(0);
         userNickName = headerView.findViewById(R.id.drawer_NikeName);
         UidTextView = headerView.findViewById(R.id.drawer_email);
@@ -242,8 +207,9 @@ public class MarketActivity extends AppCompatActivity implements
 
             }
         });
+
         File newFile = new File(getFilesDir().getPath()+"/userInfo.data");
-        System.out.println(newFile.exists());
+        Log.d(tag, "Is user info file exsisting : " + newFile.exists());
         user = SerializableManager.readSerializable(this,"userInfo.data");
 
         this.Uid = user.getUID();
@@ -251,32 +217,17 @@ public class MarketActivity extends AppCompatActivity implements
         mTabSegment = findViewById(R.id.tabSegment);
         mContentViewPager = findViewById(R.id.contentViewPager);
 
-            QMUITabSegment.Tab peny_tab = new QMUITabSegment.Tab(
-                    //ContextCompat.getDrawable(getApplicationContext(), R.mipmap.icon_tabbar_component),
-                    //ContextCompat.getDrawable(getApplicationContext(), R.mipmap.icon_tabbar_component_selected),
-                    "PENY"
-            );
-
-            QMUITabSegment.Tab shil_tab = new QMUITabSegment.Tab(
-                    //ContextCompat.getDrawable(getApplicationContext(), R.mipmap.icon_tabbar_util),
-                    //ContextCompat.getDrawable(getApplicationContext(), R.mipmap.icon_tabbar_util_selected),
-                    "SHIL"
-            );
-            QMUITabSegment.Tab dolr_tab = new QMUITabSegment.Tab(
-                    //ContextCompat.getDrawable(getApplicationContext(), R.mipmap.icon_tabbar_lab),
-                    //ContextCompat.getDrawable(getApplicationContext(), R.mipmap.icon_tabbar_lab_selected),
-                    "DOLR"
-            );
-            QMUITabSegment.Tab quid_tab = new QMUITabSegment.Tab(
-                    //ContextCompat.getDrawable(getApplicationContext(), R.mipmap.icon_tabbar_lab),
-                    //ContextCompat.getDrawable(getApplicationContext(), R.mipmap.icon_tabbar_lab_selected),
-                    "QUID"
-            );
+            QMUITabSegment.Tab peny_tab = new QMUITabSegment.Tab("PENY");
+            QMUITabSegment.Tab shil_tab = new QMUITabSegment.Tab("SHIL");
+            QMUITabSegment.Tab dolr_tab = new QMUITabSegment.Tab("DOLR");
+            QMUITabSegment.Tab quid_tab = new QMUITabSegment.Tab("QUID");
 
             mTabSegment.addTab(peny_tab)
                     .addTab(dolr_tab)
                     .addTab(shil_tab)
                     .addTab(quid_tab);
+
+
             mTabSegment.notifyDataChanged();
             fragmentManager = getSupportFragmentManager();
             initPagers();
@@ -284,7 +235,7 @@ public class MarketActivity extends AppCompatActivity implements
             mTabSegment.addOnTabSelectedListener(new QMUITabSegment.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(int index) {
-                    Log.i("sexxx", String.valueOf(index));
+                    Log.i(tag, "Select tab index : " + String.valueOf(index));
                     mContentViewPager.setCurrentItem(index);
                 }
 
@@ -309,6 +260,7 @@ public class MarketActivity extends AppCompatActivity implements
 
 
 
+    // Navigation menu listener.
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -433,10 +385,8 @@ public class MarketActivity extends AppCompatActivity implements
 
 
     public void saveData(){
-
         uploadUserData uploadUserData = new uploadUserData(this);
         uploadUserData.execute(this.Uid);
-
     }
 
 }

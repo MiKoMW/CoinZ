@@ -50,6 +50,7 @@ import java.util.List;
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.coin.Coin;
 import io.github.mikomw.coinz.user.User;
+import io.github.mikomw.coinz.util.Date;
 import io.github.mikomw.coinz.util.SerializableManager;
 import io.github.mikomw.coinz.util.uploadUserData;
 
@@ -198,6 +199,11 @@ public class MapActivity extends AppCompatActivity implements
             todayCoins = SerializableManager.readSerializable(this,"todayCoins.coin");
             CollectedCoins = SerializableManager.readSerializable(this,"collectedCoin.data");
             user = SerializableManager.readSerializable(this,"userInfo.data");
+
+            if(!user.getLastCollectedUpdateDate().equals(Date.getDateInfo().today)){
+                todayCollectedID = new HashSet<>();
+                saveData();
+            }
 
             setIcon();
             enableLocation();

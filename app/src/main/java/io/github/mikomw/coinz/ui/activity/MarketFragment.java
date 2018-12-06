@@ -1,10 +1,15 @@
 package io.github.mikomw.coinz.ui.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +49,12 @@ import lecho.lib.hellocharts.view.LineChartView;
  * create an instance of this fragment.
  */
 public class MarketFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // the fragment initialization parameters
+    // Param1 the corresponding currency of the page.
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
     View root;
-    // TODO: Rename and change types of parameters
+
     private String thisCurrency;
 
     private OnFragmentInteractionListener mListener;
@@ -64,22 +67,20 @@ public class MarketFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
+     * @param currency Parameter 1.
      * @return A new instance of fragment MarketFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MarketFragment newInstance(String param1) {
+    public static MarketFragment newInstance(String currency) {
         MarketFragment fragment = new MarketFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM1, currency);
         fragment.setArguments(args);
         return fragment;
     }
 
-
-    private ListView listview;
     private LineChartView lineChart;
-
+    private ListView listview;
     String[] date ;
     float [] score;
     private List<PointValue> mPointValues = new ArrayList<PointValue>();
@@ -92,7 +93,7 @@ public class MarketFragment extends Fragment {
     Boolean current_isCollected;
     TextView cur_coin_value_textview;
     TextView cur_coin_gold_textview;
-
+    LocalBroadcastManager broadcastManager;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,9 +104,11 @@ public class MarketFragment extends Fragment {
 
         spareChange = SerializableManager.readSerializable(getContext(),"spareChange.data");
         collectedCoin = SerializableManager.readSerializable(getContext(),"collectedCoin.data");
+        registerReceiver();
 
     }
 
+    // Initialize the view.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -127,17 +130,15 @@ public class MarketFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        System.out.println(":)");
 
         rateDBOperator rateDBOperator = new rateDBOperator(getContext());
 
         ArrayList<String> months = Date.getDateInfo().month;
 
-        //List<ExchangeRate> rates = rateDBOperator.queryMany();
-
         date=new String[months.size()];
         score=new float[months.size()];
         int con = 0;
-
 
         for(String day : months){
             ExchangeRate exchangeRate = rateDBOperator.queryOne(day);
@@ -161,10 +162,6 @@ public class MarketFragment extends Fragment {
             }
             con++;
         }
-
-
-
-
 
         initView();
 
@@ -199,7 +196,6 @@ public class MarketFragment extends Fragment {
         }
 
         havePaied = root.findViewById(R.id.market_havepaied);
-        updatePage();
 
         Button select_coin = root.findViewById(R.id.market_selectcoin);
         select_coin.setOnClickListener(new View.OnClickListener() {
@@ -223,6 +219,8 @@ public class MarketFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        System.out.println(":)");
+        user = SerializableManager.readSerializable(getContext(),"userInfo.data");
         updatePage();
     }
 
@@ -230,6 +228,7 @@ public class MarketFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        broadcastManager.unregisterReceiver(mAdDownLoadReceiver);
     }
 
     /**
@@ -250,9 +249,10 @@ public class MarketFragment extends Fragment {
 
 
     private void initLineChart(){
+
         Line line = new Line(mPointValues).setColor(Color.parseColor("#FFCD41"));
         List<Line> lines = new ArrayList<Line>();
-        line.setShape(ValueShape.CIRCLE);    //折线图上每个数据点的形状，这里是圆形
+        line.setShape(ValueShape.CIRCLE);
         line.setCubic(false);
         line.setFilled(false);
         line.setHasLabels(true);
@@ -317,9 +317,8 @@ public class MarketFragment extends Fragment {
         if(!user.isUpdated(Date.getDateInfo().today)){
             System.out.println("User is not upadted!");
             user.resetSale();
-            user.setLastUpdateDate(Date.getDateInfo().today);
+            user.setLastPayUpdateDate(Date.getDateInfo().today);
         }
-
 
         havePaied.setText("You can pay in " +  (25 - user.getToday_sale()) + " more collected coins");
         if(current_coin!=null){
@@ -330,7 +329,38 @@ public class MarketFragment extends Fragment {
             cur_coin_gold_textview.setText("Select a coin");
 
         }
+
+
+
     }
+
+    private void registerReceiver() {
+        broadcastManager = LocalBroadcastManager.getInstance(getActivity());
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("jerry");
+        broadcastManager.registerReceiver(mAdDownLoadReceiver, intentFilter);
+    }
+
+    //原创作品，未经允许禁止转载，转载请注明来自：http://www.cnblogs.com/jiangbeixiaoqiao/
+    private BroadcastReceiver mAdDownLoadReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String change = intent.getStringExtra("change");
+            if ("yes".equals(change)) {
+                // 这地方只能在主线程中刷新UI,子线程中无效，因此用Handler来实现
+                new Handler().post(new Runnable() {
+                    public void run() {
+                        user = SerializableManager.readSerializable(getContext(),"userInfo.data");
+
+                        updatePage();
+
+                    }
+                });
+            }
+        }
+    };
+
+
 
     public void saveData(){
         SerializableManager.saveSerializable(getContext(),user,"userInfo.data");
@@ -412,6 +442,10 @@ public class MarketFragment extends Fragment {
             current_coin = null;
             updatePage();
             saveData();
+            Intent intent = new Intent("jerry");
+            intent.putExtra("change", "yes");
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
             return;
         }
 
