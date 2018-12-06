@@ -58,7 +58,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="@string/hint_login_username"
+                    android:hint="Your email"
                     android:inputType="textVisiblePassword"
                     android:maxLength="30"
                     android:singleLine="true"
@@ -100,7 +100,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="@string/hint_login_password"
+                    android:hint="Your password"
                     android:inputType="textPassword"
                     android:maxLength="30"
                     android:singleLine="true"
@@ -173,7 +173,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:text="联系客服"
+            android:text="Contact Us"
             android:textColor="@color/color_b0b8b2"
             android:textSize="14dp" />
         <View
@@ -186,7 +186,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:text="关于我们"
+            android:text="About Coinz"
             android:textColor="@color/color_b0b8b2"
             android:textSize="14dp" />
     </LinearLayout>

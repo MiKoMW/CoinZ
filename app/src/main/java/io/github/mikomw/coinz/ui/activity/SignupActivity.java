@@ -52,9 +52,9 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
     private TextView back_login;
 
 
-    private int screenHeight = 0;//屏幕高度
-    private int keyHeight = 0; //软件盘弹起后所占高度
-    private float scale = 0.6f; //logo缩放比例
+    private int screenHeight = 0;
+    private int keyHeight = 0;
+    private float scale = 0.6f;
     private View service,content;
     private int height = 0 ;
 
@@ -188,7 +188,6 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
               /* old是改变前的左上右下坐标点值，没有old的是改变后的左上右下坐标点值
               现在认为只要控件将Activity向上推的高度超过了1/3屏幕高，就认为软键盘弹起*/
                 if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
-                    Log.e("wenzhihao", "up------>"+(oldBottom - bottom));
                     int dist = content.getBottom() - bottom;
                     if (dist>0){
                         ObjectAnimator mAnimatorTranslateY = ObjectAnimator.ofFloat(content, "translationY", 0.0f, -dist);
@@ -200,7 +199,6 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
                     service.setVisibility(View.INVISIBLE);
 
                 } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
-                    Log.e("wenzhihao", "down------>"+(bottom - oldBottom));
                     if ((content.getBottom() - oldBottom)>0){
                         ObjectAnimator mAnimatorTranslateY = ObjectAnimator.ofFloat(content, "translationY", content.getTranslationY(), 0);
                         mAnimatorTranslateY.setDuration(300);

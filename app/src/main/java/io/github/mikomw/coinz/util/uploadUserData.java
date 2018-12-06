@@ -71,6 +71,18 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
         StorageReference spareChangeRef = cur_user.child("spareChange.data");
         StorageReference userInfoRef = cur_user.child("userInfo.data");
 
+        // Initialize data files for new users.
+
+
+        if(isSignUp) {
+            SerializableManager.saveSerializable(weakActivity.get(),new HashSet<String>(),"todayCollectedCoinID.data");
+            SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"collectedCoin.data");
+            SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"spareChange.data");
+            SerializableManager.saveSerializable(weakActivity.get(),new User(userID),"userInfo.data");
+
+        }
+
+
         // Upload the user data file.
         // In case of success, jump to the map activity or do it in background.
         // In case of failure, do nothing. Our app will guarantee to have the local file.

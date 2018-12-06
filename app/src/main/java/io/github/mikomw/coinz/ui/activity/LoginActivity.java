@@ -285,7 +285,9 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
                 break;
 
             case R.id.forget_password:
-                System.out.println("Forget!");
+                Log.i(tag,"User forget Password!");
+                Toast.makeText(LoginActivity.this, "Function coming!",
+                        Toast.LENGTH_SHORT).show();
                 break;
         }
 

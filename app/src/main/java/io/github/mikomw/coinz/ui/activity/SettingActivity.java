@@ -15,6 +15,8 @@ import com.qmuiteam.qmui.widget.QMUILoadingView;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
+import java.util.Set;
+
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.util.coinHelper;
 
@@ -90,6 +92,21 @@ public class SettingActivity extends AppCompatActivity {
         QMUIGroupListView.newSection(this)
                 .addItemView(legal_setting,null)
                 .addItemView(about_setting,null)
+                .addTo(mGroupListView);
+
+
+        // User can log out and try to log in with new account.
+        QMUICommonListItemView logout = mGroupListView.createItemView("Log Out");
+        logout.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
+        QMUIGroupListView.newSection(this)
+                .addItemView(logout, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(SettingActivity.this, WelcomeActivity.class);
+                        startActivity(intent);
+                        SettingActivity.this.finish();
+                    }
+                })
                 .addTo(mGroupListView);
 
 

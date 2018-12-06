@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ public class WalletActivity extends AppCompatActivity {
     String tag = "WalletActivity";
     HashMap<String,ArrayList<Coin>> collectedCoins;
     HashMap<String,ArrayList<Coin>> spareChanges;
+
     User user;
     QMUIGroupListView mGroupListView;
     String shil = "SHIL";
@@ -41,10 +43,13 @@ public class WalletActivity extends AppCompatActivity {
         collectedCoins = new HashMap<>();
         spareChanges = new HashMap<>();
 
+        // Read the file from the local data.
         ArrayList<Coin> spare_temp = SerializableManager.readSerializable(this,"spareChange.data");
         ArrayList<Coin> collected_temp = SerializableManager.readSerializable(this,"collectedCoin.data");
         user = SerializableManager.readSerializable(this,"userInfo.data");
-        ArrayList<Coin> temp;
+
+        // Sort the coins into four currencies
+        ArrayList<Coin> temp_list;
 
         collectedCoins.put(shil,new ArrayList<>());
         collectedCoins.put(dolr,new ArrayList<>());
@@ -58,21 +63,18 @@ public class WalletActivity extends AppCompatActivity {
 
 
         for(Coin coin : collected_temp){
-            temp = collectedCoins.getOrDefault(coin.getCurrency(),new ArrayList<>());
-            temp.add(coin);
-            collectedCoins.put(coin.getCurrency(),temp);
+            temp_list = collectedCoins.getOrDefault(coin.getCurrency(),new ArrayList<>());
+            temp_list.add(coin);
+            collectedCoins.put(coin.getCurrency(),temp_list);
         }
 
         for(Coin coin : spare_temp){
-            temp = spareChanges.getOrDefault(coin.getCurrency(),new ArrayList<>());
-            temp.add(coin);
-            spareChanges.put(coin.getCurrency(),temp);
+            temp_list = spareChanges.getOrDefault(coin.getCurrency(),new ArrayList<>());
+            temp_list.add(coin);
+            spareChanges.put(coin.getCurrency(),temp_list);
         }
 
-
-
-        System.out.println(spare_temp);
-
+        // Initialize the action bar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.wallet_bar);
 
         toolbar.setTitle("My Wallet");
@@ -93,6 +95,7 @@ public class WalletActivity extends AppCompatActivity {
             }
         });
 
+        // Initialize the list view.
         mGroupListView=findViewById(R.id.group_list_item_contact);
 
         QMUICommonListItemView listItemName = mGroupListView.createItemView("Gold Balance");
@@ -132,29 +135,29 @@ public class WalletActivity extends AppCompatActivity {
                     QMUICommonListItemView viewList = (QMUICommonListItemView) v;
                     switch (viewList.getText().toString()) {
                         case "Gold Balance":
-                            System.out.println("想要balance");
+                            Log.d(tag,"balance selected");
                             break;
 
                         case "PENY":
-                            System.out.println("想要Peny");
+                            System.out.println("Penny selected");
                             jumpToView(peny);
                             break;
                         case "DOLR":
-                            System.out.println("想要Dolr");
+                            System.out.println("Dolr selected");
                             jumpToView(dolr);
                             break;
                         case "SHIL":
-                            System.out.println("想要Shil");
+                            System.out.println("Shil selected");
                             jumpToView(shil);
                             break;
                         case "QUID":
-                            System.out.println("想要Quid");
+                            System.out.println("Quid selected");
                             jumpToView(quid);
                             break;
 
                     }
                     CharSequence text = ((QMUICommonListItemView) v).getText();
-                    System.out.println(text);
+                    System.out.println("Select to view " + text);
                 }
             }
         };
@@ -176,11 +179,9 @@ public class WalletActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-
     }
 
-
+    // If a coin is selected, jump to view a list of coin.
     public void jumpToView(String currency){
 
         ArrayList<Coin> collectCoin = collectedCoins.get(currency);
@@ -191,9 +192,6 @@ public class WalletActivity extends AppCompatActivity {
         intent.putExtra("spareChange", (ArrayList<Coin>) spareChange);
         intent.putExtra("currency",currency);
         startActivityForResult(intent,0);
-
     }
-
-
 
 }

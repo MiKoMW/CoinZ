@@ -43,10 +43,6 @@
             android:label="@string/title_activity_map"
             android:theme="@style/AppTheme" />
         <activity android:name=".ui.activity.MainActivity" />
-        <activity
-            android:name=".ui.activity.ScrollingActivity"
-            android:label="@string/title_activity_scrolling"
-            android:theme="@style/AppTheme" />
         <activity android:name=".ui.activity.WalletActivity" />
         <activity android:name=".ui.activity.displayCoinActivity" />
         <activity android:name=".ui.activity.SettingActivity" />
