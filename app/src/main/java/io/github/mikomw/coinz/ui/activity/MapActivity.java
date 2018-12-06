@@ -1,7 +1,6 @@
 package io.github.mikomw.coinz.ui.activity;
 
 import android.arch.lifecycle.Lifecycle;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -14,14 +13,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,8 +42,6 @@ import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,17 +57,16 @@ public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback, LocationEngineListener,
        PermissionsListener, NavigationView.OnNavigationItemSelectedListener{
 
-    String tag = "MapActivity";
+    public static final String tag = "MapActivity";
     private MapView mapView;
     private MapboxMap map;
     private PermissionsManager permissionsManager;
     private LocationEngine locationEngine;
     private LocationLayerPlugin locationLayerPlugin;
-    private Location originLocation;
     ArrayList<Coin> todayCoins;
     HashMap<String,Marker> todayIcons;
+    Location originLocation;
 
-    //=================================================这个以后得改
     HashSet<String> todayCollectedID;
     ArrayList<Coin> CollectedCoins;
     long lastUpdateTime;
@@ -86,9 +78,6 @@ public class MapActivity extends AppCompatActivity implements
     ImageView avater;
     DrawerLayout drawer;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,10 +88,6 @@ public class MapActivity extends AppCompatActivity implements
         mapView.getMapAsync(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-
-//        toolbar.setOverflowIcon;n
-        //toolbar.setTitle("HelloToolbar");
-        //toolbar.setSubtitle("SubTitle");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -115,15 +100,11 @@ public class MapActivity extends AppCompatActivity implements
         toolbar.setNavigationIcon(R.drawable.account);
         toolbar.setOverflowIcon(ContextCompat.getDrawable(this,R.drawable.menu));
 
-
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        //设置navigationview的menu监听
+        // Set onClick listener.
         navigationView.setNavigationItemSelectedListener(this);
 
-
         Uid = getIntent().getStringExtra("Uid");
-        //userName.setText(Uid);
         todayIcons = new HashMap<>();
         lastUpdateTime = System.currentTimeMillis();
         lastCoinCollected = 0;
@@ -162,7 +143,6 @@ public class MapActivity extends AppCompatActivity implements
                 }
         });
 
-        //initUserView();
     }
 
 
@@ -173,25 +153,20 @@ public class MapActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.nav_wallet) {
-            System.out.println("Wallet Sellected");
+            System.out.println("Wallet Selected");
             saveData();
-
             Intent intent = new Intent(this, WalletActivity.class);
-            //startActivity(intent);
             startActivityForResult(intent,0);
         } else if (id == R.id.nav_guide) {
 
             System.out.println("Guide Sellected");
             saveData();
-
             Intent intent = new Intent(this, WelcomeGuideActivity.class);
-            //startActivity(intent);
             startActivityForResult(intent,0);
 
         } else if (id == R.id.nav_setting) {
             System.out.println("setting selected;");
             saveData();
-
             Intent intent = new Intent(this, SettingActivity.class);
             startActivityForResult(intent,0);
         }
@@ -224,18 +199,9 @@ public class MapActivity extends AppCompatActivity implements
             CollectedCoins = SerializableManager.readSerializable(this,"collectedCoin.data");
             user = SerializableManager.readSerializable(this,"userInfo.data");
 
-
-            /*
-            try{
-                Thread.sleep(2000);
-            }catch (Exception e){
-                e.printStackTrace();
-            }*/
-
             setIcon();
             enableLocation();
             initUserView();
-
 
         }
 
@@ -274,7 +240,7 @@ public class MapActivity extends AppCompatActivity implements
         } else {
             locationEngine.addLocationEngineListener(this);
         }
-        System.out.println("Good");
+        Log.d(tag,"Location engine initialized.");
     };
 
     @SuppressWarnings("MissingPermission")
@@ -307,11 +273,9 @@ public class MapActivity extends AppCompatActivity implements
             Log.d(tag, "[onLocationChanged] location is not null");
             originLocation = location;
             setCameraPosition(location);
-
             collectCoins(location);
             updateIcon();
         }
-
     }
 
     @Override
@@ -324,7 +288,6 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain){
         Log.d(tag, "Permissions: " + permissionsToExplain.toString());
-// Present toast or dialog.
     }
 
     private void setCameraPosition(Location location) {
@@ -539,7 +502,6 @@ public class MapActivity extends AppCompatActivity implements
     public void saveData(){
         SerializableManager.saveSerializable(this,todayCollectedID,"todayCollectedCoinID.data");
         SerializableManager.saveSerializable(this,CollectedCoins,"collectedCoin.data");
-
         uploadUserData uploadUserData = new uploadUserData(this);
         uploadUserData.execute(this.Uid);
         System.out.println(Uid);

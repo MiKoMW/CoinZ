@@ -93,7 +93,8 @@ public class rateDBOperator {
         return false;
     }
 
+    public void closeDB(){
 
-
+    }
 }
 

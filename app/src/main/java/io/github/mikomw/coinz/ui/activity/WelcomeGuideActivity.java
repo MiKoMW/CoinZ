@@ -20,20 +20,23 @@ import io.github.mikomw.coinz.util.SharedPreferencesUtil;
 /**
  * Created by xialo on 2016/7/25.
  */
+
 public class WelcomeGuideActivity extends Activity implements View.OnClickListener {
+    String tag = "WelcomeGuideActivity";
+
     private ViewPager vp;
     private GuideViewPagerAdapter adapter;
     private List<View> views;
     private Button startBtn;
 
-    // 引导页图片资源
+    // The image resource of the guide pages.
     private static final int[] pics = { R.layout.guide_view1,
             R.layout.guide_view2, R.layout.guide_view3};
 
-    // 底部小点图片
+    // The bottom dots images
     private ImageView[] dots;
 
-    // 记录当前选中位置
+    // Current index of screens
     private int currentIndex;
 
     @Override
@@ -43,7 +46,7 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
 
         views = new ArrayList<View>();
 
-        // 初始化引导页视图列表
+        // Initialize the list view.
         for (int i = 0; i < pics.length; i++) {
             View view = LayoutInflater.from(this).inflate(pics[i], null);
 
@@ -52,9 +55,7 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
                 startBtn.setTag("enter");
                 startBtn.setOnClickListener(this);
             }
-
             views.add(view);
-
         }
 
         vp = (ViewPager) findViewById(R.id.vp_guide);
@@ -74,7 +75,8 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
     @Override
     protected void onPause() {
         super.onPause();
-        // 如果切换到后台，就设置下次不进入功能引导页
+
+        // In case of switching to background, do not show the guide again.
         SharedPreferencesUtil.putBoolean(WelcomeGuideActivity.this, SharedPreferencesUtil.FIRST_OPEN, false);
         finish();
     }
@@ -93,25 +95,20 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
         LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
         dots = new ImageView[pics.length];
 
-        // 循环取得小点图片
         for (int i = 0; i < pics.length; i++) {
-            // 得到一个LinearLayout下面的每一个子元素
+
             dots[i] = (ImageView) ll.getChildAt(i);
-            dots[i].setEnabled(false);// 都设为灰色
+            dots[i].setEnabled(false);
             dots[i].setOnClickListener(this);
-            dots[i].setTag(i);// 设置位置tag，方便取出与当前位置对应
+            dots[i].setTag(i);
         }
 
         currentIndex = 0;
-        dots[currentIndex].setEnabled(true); // 设置为白色，即选中状态
+        dots[currentIndex].setEnabled(true);
 
     }
 
-    /**
-     * 设置当前view
-     *
-     * @param position
-     */
+    // Set the current view.
     private void setCurView(int position) {
         if (position < 0 || position >= pics.length) {
             return;
@@ -119,11 +116,7 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
         vp.setCurrentItem(position);
     }
 
-    /**
-     * 设置当前指示点
-     *
-     * @param position
-     */
+    // Set the current Dot to the current view.
     private void setCurDot(int position) {
         if (position < 0 || position > pics.length || currentIndex == position) {
             return;
@@ -150,6 +143,7 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
         boolean isFirstOpen = SharedPreferencesUtil.getBoolean(this, SharedPreferencesUtil.FIRST_OPEN, true);
 
         if(!isFirstOpen){
+            // In the case, the guide is entered from other activities.
             Intent intent = new Intent();
             setResult(RESULT_OK,intent);
         }else {
@@ -175,7 +169,6 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
 
         @Override
         public void onPageSelected(int position) {
-            // 设置底部小点选中状态
             setCurDot(position);
         }
 

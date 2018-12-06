@@ -4,82 +4,97 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import io.github.mikomw.coinz.coin.Coin;
-import io.github.mikomw.coinz.db.ExchangeRate;
-import io.github.mikomw.coinz.db.rateDBOperator;
 import io.github.mikomw.coinz.ui.activity.SignupActivity;
-import io.github.mikomw.coinz.ui.activity.WelcomeActivity;
 import io.github.mikomw.coinz.user.User;
 
 public class uploadUserData extends AsyncTask<String, Void, Boolean> {
 
+    private final static String tag = "uploadUserDataTask";
+
     private final WeakReference<Activity> weakActivity;
-    private io.github.mikomw.coinz.db.rateDBOperator rateDBOperator;
-    boolean isSignUp;
+
+    // To check if login activity called this task
+    // If it is, we need to jump to map activity after this task.
+    private boolean isSignUp;
+
+    // We counter how many download has finished.
+    // We need all four finished before we jump to other activity to avoid null pointer exception.
+    private int jump_counter;
+
+    private QMUITipDialog tipDialog;
+
     public uploadUserData(Activity myActivity) {
         this.weakActivity = new WeakReference<>(myActivity);
         this.isSignUp = (this.weakActivity.get() instanceof SignupActivity);
+        tipDialog = new QMUITipDialog.Builder(this.weakActivity.get())
+                .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                .setTipWord("Synchronize your data.")
+                .create();
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        jump_counter = 0;
+        if(isSignUp)
+        tipDialog.show();
     }
 
     @Override
     protected Boolean doInBackground(String ... params) {
 
+        // Pass user ID.
         String userID = params[0];
+
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
         StorageReference users = storageRef.child("users");
-        StorageReference thisuser = users.child(userID);
-        StorageReference todayCollectedRef = thisuser.child("todayCollectedCoinID.data");
-        StorageReference collectedRef = thisuser.child("collectedCoin.data");
-        StorageReference spareChangeRef = thisuser.child("spareChangeCoin.data");
-        StorageReference userInfoRef = thisuser.child("userInfo.data");
+        StorageReference cur_user = users.child(userID);
+        StorageReference todayCollectedRef = cur_user.child("todayCollectedCoinID.data");
+        StorageReference collectedRef = cur_user.child("collectedCoin.data");
+        StorageReference spareChangeRef = cur_user.child("spareChangeCoin.data");
+        StorageReference userInfoRef = cur_user.child("userInfo.data");
 
+        // Upload the user data file.
+        // In case of success, jump to the map activity or do it in background.
+        // In case of failure, do nothing. Our app will guarantee to have the local file.
+        // This should not normally happen.
         Uri file = Uri.fromFile(new File(this.weakActivity.get().getFilesDir().getPath(),"todayCollectedCoinID.data"));
         UploadTask uploadtodayCollected = todayCollectedRef.putFile(file);
         uploadtodayCollected.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                System.out.println("Fail to upload todayCollectedCoin.data");
-                // Handle unsuccessful uploads
+                Log.e(tag,"Fail to upload todayCollectedCoin.data");
+                // Initialize data for new user.
                 if(isSignUp){
-                SerializableManager.saveSerializable(weakActivity.get(),new HashSet<String>(),"todayCollectedCoinID.data");
-                todayCollectedRef.putFile(file);}
+                    Log.d(tag,"New file created for todayCollectedCoin.data");
+                    SerializableManager.saveSerializable(weakActivity.get(),new HashSet<String>(),"todayCollectedCoinID.data");
+                    todayCollectedRef.putFile(file);
+                }
+
+                jumpToActivity();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-                System.out.println("Success");
-
+                System.out.println("Upload Success");
+                jumpToActivity();
             }
         });
 
@@ -88,18 +103,23 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
         uploadCollected.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                System.out.println("Fail to upload collectedCoin.data");
+                Log.e(tag,"Fail to upload collectedCoin.data");
                 // Handle unsuccessful uploads
                 if(isSignUp){
-                SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"collectedCoin.data");
-                collectedRef.putFile(collected);}
+                    Log.d(tag,"New file created for collectedCoin.data");
+                    SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"collectedCoin.data");
+                    collectedRef.putFile(collected);
+                }
+
+                jumpToActivity();
+
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-                System.out.println("Success");
+
+                System.out.println("Upload Success");
+                jumpToActivity();
 
             }
         });
@@ -109,20 +129,22 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
         uploadSpareChange.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                System.out.println("Fail to upload spareChange.data");
+                Log.e(tag,"Fail to upload spareChange.data");
                 if (isSignUp) {
+                    Log.d(tag,"New file created for spareChange.data");
+
                     SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"spareChange.data");
                     spareChangeRef.putFile(spareChange);
-                    // Handle unsuccessful uploads
                 }
-
+                jumpToActivity();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-                System.out.println("Success");
+
+                System.out.println("Upload Success");
+                jumpToActivity();
+
 
             }
         });
@@ -133,20 +155,22 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
         uploadUserInfo.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                System.out.println("Fail to upload userInfo.data");
-                // Handle unsuccessful uploads
+                Log.e(tag,"Fail to upload userInfo.data");
                 if(isSignUp){
+                    Log.d(tag,"New file created for userInfo.data");
                     SerializableManager.saveSerializable(weakActivity.get(),new User(userID),"userInfo.data");
                     userInfoRef.putFile(userInfo);
                 }
+                jumpToActivity();
+
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                 // ...
-                System.out.println("Success");
-
+                System.out.println("Upload Success");
+                jumpToActivity();
             }
         });
 
@@ -157,12 +181,25 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
+        jumpToActivity();
+    }
 
-        Activity activity = this.weakActivity.get();
-        if(activity instanceof SignupActivity){
-            ((SignupActivity) activity).jumpToMap();
+    private void jumpToActivity(){
+        jump_counter++;
+        System.out.println(jump_counter);
+
+        // We will wait the fifth call of this function.
+        if(jump_counter <= 4){
+            System.out.println("");
+            return;
         }
-
+        if(isSignUp) {
+            tipDialog.dismiss();
+            Activity activity = this.weakActivity.get();
+            if (activity instanceof SignupActivity) {
+                ((SignupActivity) activity).jumpToMap();
+            }
+        }
     }
 }
 

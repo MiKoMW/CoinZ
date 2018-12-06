@@ -54,11 +54,11 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
     private TextView register;
 
 
-    private int screenHeight = 0;//屏幕高度
-    private int keyHeight = 0; //软件盘弹起后所占高度
-    private float scale = 0.6f; //logo缩放比例
+    private int screenHeight = 0;
+    private int keyHeight = 0;
+    private float scale = 0.6f;
     private View service,content;
-    private int height = 0 ;
+    private int height = 0;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -91,7 +91,8 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-        //Debug
+
+        // For development purpose. Skip the login and login as the previous user.
         //Intent intent = new Intent(LoginActivity.this, MapActivity.class);
         //startActivity(intent);
     }
@@ -118,8 +119,8 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
         forget_password = (TextView) findViewById(R.id.forget_password);
         service = findViewById(R.id.service);
         content = findViewById(R.id.content);
-        screenHeight = this.getResources().getDisplayMetrics().heightPixels; //获取屏幕高度
-        keyHeight = screenHeight / 3;//弹起高度为屏幕高度的1/3
+        screenHeight = this.getResources().getDisplayMetrics().heightPixels; // Get the screen height.
+        keyHeight = screenHeight / 3; // Jump up the the 1/3 of the screen.
         register = (TextView) findViewById(R.id.regist);
     }
 
@@ -195,7 +196,7 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
               /* old是改变前的左上右下坐标点值，没有old的是改变后的左上右下坐标点值
               现在认为只要控件将Activity向上推的高度超过了1/3屏幕高，就认为软键盘弹起*/
                 if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
-                    Log.e("wenzhihao", "up------>"+(oldBottom - bottom));
+                    Log.e(tag, "up------>"+(oldBottom - bottom));
                     int dist = content.getBottom() - bottom;
                     if (dist>0){
                         ObjectAnimator mAnimatorTranslateY = ObjectAnimator.ofFloat(content, "translationY", 0.0f, -dist);
@@ -219,10 +220,8 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
             }
         });
     }
-    /**
-     * 缩小
-     * @param view
-     */
+
+
     public void zoomIn(final View view, float dist) {
         view.setPivotY(view.getHeight());
         view.setPivotX(view.getWidth() / 2);
@@ -237,10 +236,8 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
         mAnimatorSet.start();
     }
 
-    /**
-     * f放大
-     * @param view
-     */
+
+
     public void zoomOut(final View view) {
         view.setPivotY(view.getHeight());
         view.setPivotX(view.getWidth() / 2);
@@ -295,7 +292,6 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
 
     }
 
-
     private void signIn(String email, String password) {
         Log.d(tag, "signIn:" + email);
         if (!validateForm()) {
@@ -310,6 +306,7 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
                         System.out.println("Success:" + task.isSuccessful());
 
                         if(task.isSuccessful()) {
+                            Log.d(tag,"User " + mAuth.getUid() + " log in successfully!");
                             downloadUserData downloadUserData = new downloadUserData(LoginActivity.this);
                             downloadUserData.execute(mAuth.getUid());
                             System.out.println(mAuth.getUid() + "Log in");
@@ -317,18 +314,18 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
 
 
                         if (!task.isSuccessful()) {
+                            Log.d(tag,"User log in unsuccessful.");
+
                             Toast.makeText(LoginActivity.this, R.string.auth_failed,
                                     Toast.LENGTH_SHORT).show();
                         }
 
-                        if (!task.isSuccessful()) {
-                        }
 
                     }
                 });
     }
 
-
+    // To check if the password and the email are valid.
     private boolean validateForm() {
         boolean valid = true;
 

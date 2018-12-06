@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 
@@ -18,7 +19,6 @@ import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -50,6 +50,8 @@ import rx.functions.Action1;
 
 public class WelcomeActivity extends Activity {
 
+    String tag = "WelcomeActivity";
+
     @BindView(R.id.iv_entry)
     ImageView mIVEntry;
 
@@ -66,23 +68,34 @@ public class WelcomeActivity extends Activity {
             R.drawable.me6,R.drawable.me7,
             R.drawable.me8};
 
+
     DateInfo dateinfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 判断是否是第一次开启应用
+
+        // Check if it is the first time for the user to use this app.
+        // If so, enter the help activity.
+        // isFirstOpen = true;
         boolean isFirstOpen = SharedPreferencesUtil.getBoolean(this, SharedPreferencesUtil.FIRST_OPEN, true);
-        // 如果是第一次启动，则先进入功能引导页
-        //isFirstOpen = true;
+
+        // For the call back function to know if other tasks are finished.
         finished = 0;
         this.dateinfo = Date.getDateInfo();
+
+        // Download today's map
         DownloadFileTask myTask = new DownloadFileTask(this);
         myTask.execute(dateinfo.todayURL);
+
+        // Download past exchange rates.
         UpdateRateTask updatedRates = new UpdateRateTask(this);
         updatedRates.execute();
+
+        // Delete previous user data.
         deleteUserData deleteUserData = new deleteUserData(this);
         deleteUserData.delete();
+
 
         if (isFirstOpen) {
             Intent intent = new Intent(this, WelcomeGuideActivity.class);
@@ -91,13 +104,16 @@ public class WelcomeActivity extends Activity {
             return;
         }
 
-        // 如果不是第一次启动app，则正常显示启动屏
+        // If not the first time open this app, go to login normally.
         setContentView(R.layout.activity_welcome);
         ButterKnife.bind(this);
         startMainActivity();
     }
+
     private void startMainActivity(){
-        Random random = new Random(SystemClock.elapsedRealtime());//SystemClock.elapsedRealtime() 从开机到现在的毫秒数（手机睡眠(sleep)的时间也包括在内）
+        //SystemClock.elapsedRealtime() random seed for choosing the initial page.
+
+        Random random = new Random(SystemClock.elapsedRealtime());
         mIVEntry.setImageResource(Imgs[random.nextInt(Imgs.length)]);
 
         Observable.timer(1000, TimeUnit.MILLISECONDS)
@@ -111,6 +127,7 @@ public class WelcomeActivity extends Activity {
                         startAnim();
                     }
                 });
+
     }
 
     private void startAnim() {
@@ -133,6 +150,10 @@ public class WelcomeActivity extends Activity {
         });
     }
 
+    // A call back function to make sure that all the processes are finished.
+    // 1 The loading map
+    // 2 The updating exchange rate
+    // 3 The welcome animation
     public void jumpToLogin(){
         this.finished = finished + 1;
         System.out.println(finished);
@@ -142,12 +163,8 @@ public class WelcomeActivity extends Activity {
         }
     }
 
-    /**
-     * 屏蔽物理返回按钮
-     * @param keyCode
-     * @param event
-     * @return
-     */
+
+     //Shield Physical Return Button
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_BACK){
@@ -155,28 +172,6 @@ public class WelcomeActivity extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
-
-    private void downExchangeRate(){
-
-
-
-
-        // For debug information.
-        /*
-        List<ExchangeRate> temp =  rateDBOperator.queryMany();
-
-
-        for(ExchangeRate ex : temp){
-            System.out.println(ex.getDate());
-            System.out.println(ex.getDOLR());
-            System.out.println(ex.getPENY());
-            System.out.println(ex.getQUID());
-            System.out.println(ex.getSHIL());
-        }
-        */
-    }
-
 
     public static class DownloadFileTask extends AsyncTask<String, Void, String> {
         private static final String tag = "DownloadFileTask";
@@ -187,6 +182,7 @@ public class WelcomeActivity extends Activity {
         }
         @Override
         protected String doInBackground(String... urls) {
+            Log.i(tag, "Download today map.");
             try {
                 return loadFileFromNetwork(urls[0]);
             } catch (IOException e) {
@@ -226,7 +222,6 @@ public class WelcomeActivity extends Activity {
             super.onPostExecute(result);
             IO.writeToFile(this.weakActivity.get().getFilesDir().getPath(),"todayMap.geojson",result);
 
-            System.out.println(result);
             ArrayList<Coin> todaycoins = new ArrayList<>();
             try {
                 FeatureCollection coins = FeatureCollection.fromJson(result);
@@ -239,11 +234,11 @@ public class WelcomeActivity extends Activity {
                     Double value = Double.parseDouble(feature.getStringProperty("value"));
                     String currency = feature.getStringProperty("currency");
                     Point point = (Point) feature.geometry();
+                    if(point == null){
+                        Log.e(tag,"A coin with null position. Parsing error.");
+                        continue;
+                    }
                     LatLng latLng = new LatLng(point.latitude(), point.longitude());
-
-                    Double lat = latLng.getLatitude();
-                    Double Lng = latLng.getLongitude();
-
 
                     // Creating coin object
                     Coin coin = new Coin(id,value,currency,latLng);
@@ -253,15 +248,18 @@ public class WelcomeActivity extends Activity {
                 e.printStackTrace();
             }
 
+            // Save coins to the local data file.
             SerializableManager.saveSerializable(this.weakActivity.get(),todaycoins,"todayCoins.coin");
 
+            Log.i(tag, "Download today's coin succeed.");
+            // Call back function.
             ((WelcomeActivity) weakActivity.get()).jumpToLogin();
-
         }
     }
 
 
     public static class UpdateRateTask extends AsyncTask<Void, Void, ArrayList<ExchangeRate>>{
+        private static final String tag = "UpdateRateTask";
 
         private final WeakReference<Activity> weakActivity;
         private rateDBOperator rateDBOperator;
@@ -273,7 +271,9 @@ public class WelcomeActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            Log.i(tag, "Download exchange rate.");
             rateDBOperator = new rateDBOperator(this.weakActivity.get());
+            Log.v(tag, "Datebase operator initialization.");
 
         }
 
@@ -282,6 +282,7 @@ public class WelcomeActivity extends Activity {
             ArrayList<String> updatedDates = new ArrayList<>();
             List<String> alreadyDone = rateDBOperator.queryAlllRate();
 
+            // Check if we have already updated for the information.
             ArrayList<String> dates = Date.getDateInfo().month;
 
             for(String date : dates){
@@ -368,10 +369,13 @@ public class WelcomeActivity extends Activity {
             }
 
 
+            // Store the rates in the SQLite database.
             for(ExchangeRate rate : result){
                 if(!rateDBOperator.CheckIsDataAlreadyInDBorNot(rate.getDate()))
                     rateDBOperator.add(rate);
             }
+
+            // Call back function.
             ((WelcomeActivity) activity).jumpToLogin();
 
 

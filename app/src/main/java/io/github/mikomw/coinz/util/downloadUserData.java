@@ -2,98 +2,114 @@ package io.github.mikomw.coinz.util;
 
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
-import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import io.github.mikomw.coinz.coin.Coin;
-import io.github.mikomw.coinz.db.ExchangeRate;
-import io.github.mikomw.coinz.db.rateDBOperator;
 import io.github.mikomw.coinz.ui.activity.LoginActivity;
-import io.github.mikomw.coinz.ui.activity.WelcomeActivity;
 import io.github.mikomw.coinz.user.User;
 
 public class downloadUserData extends AsyncTask<String, Void, Boolean> {
+    private final static String tag = "downloadUserDataTask";
 
     private final WeakReference<Activity> weakActivity;
-    private io.github.mikomw.coinz.db.rateDBOperator rateDBOperator;
-    boolean isLogin;
+
+    // To check if login activity called this task
+    // If it is, we need to jump to map activity after this task.
+    private boolean isLogin;
+
+    // We counter how many download has finished.
+    // We need all four finished before we jump to other activity to avoid null pointer exception.
+    private int jump_counter;
+
+    private QMUITipDialog  tipDialog;
+
 
     public downloadUserData(Activity myActivity) {
         this.weakActivity = new WeakReference<>(myActivity);
         isLogin = this.weakActivity.get() instanceof LoginActivity;
+        tipDialog = new QMUITipDialog.Builder(this.weakActivity.get())
+                .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                .setTipWord("Loading your data.")
+                .create();
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        jump_counter = 0;
+        tipDialog.show();
     }
 
     @Override
     protected Boolean doInBackground(String ... params) {
 
+        // Pass user ID.
         String userID = params[0];
+
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
         StorageReference users = storageRef.child("users");
-        StorageReference thisuser = users.child(userID);
-        StorageReference todayCollectedRef = thisuser.child("todayCollectedCoinID.data");
-        StorageReference collectedRef = thisuser.child("collectedCoin.data");
-        StorageReference spareChangeRef = thisuser.child("spareChangeCoin.data");
-        StorageReference userInfoRef = thisuser.child("userInfo.data");
+        StorageReference cur_user = users.child(userID);
+        StorageReference todayCollectedRef = cur_user.child("todayCollectedCoinID.data");
+        StorageReference collectedRef = cur_user.child("collectedCoin.data");
+        StorageReference spareChangeRef = cur_user.child("spareChangeCoin.data");
+        StorageReference userInfoRef = cur_user.child("userInfo.data");
 
 
         File todayCollectedCoinIDFile = new File(this.weakActivity.get().getFilesDir().getPath(),"todayCollectedCoinID.data");
 
+        // Download the user data file.
+        // In case of success, jump to the map activity or jump back.
+        // In case of failure, we create new file.
+        // This should not normally happen.
         todayCollectedRef.getFile(todayCollectedCoinIDFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("DownLoad Success todayCollectedCoinID.data");
+                Log.d(tag,"DownLoad Success todayCollectedCoinID.data");
+                jumpToActivity();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                System.out.println("Fail to download todayCollectedCoinID.data");
+                Log.d(tag,"Fail to download todayCollectedCoinID.data");
                 if(isLogin) {
                     SerializableManager.saveSerializable(weakActivity.get(), new HashSet<String>(), "todayCollectedCoinID.data");
+                    jumpToActivity();
                 }
             }
         });
 
-        File collectedCoinIDFile = new File(this.weakActivity.get().getFilesDir().getPath(),"collectedCoin.data");
+        File collectedCoinFile = new File(this.weakActivity.get().getFilesDir().getPath(),"collectedCoin.data");
 
-        collectedRef.getFile(collectedCoinIDFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+        collectedRef.getFile(collectedCoinFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("DownLoad Success collectedCoin.data");
+                Log.d(tag,"DownLoad Success collectedCoin.data");
+                jumpToActivity();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                System.out.println("Fail to download collectedCoin.data");
+                Log.d(tag,"Fail to download collectedCoin.data");
                 if(isLogin) {
                     SerializableManager.saveSerializable(weakActivity.get(), new ArrayList<Coin>(), "collectedCoin.data");
+                    jumpToActivity();
                 }
             }
         });
@@ -103,15 +119,17 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
         spareChangeRef.getFile(spareChangeCoinFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("DownLoad Success spareChangeCoin.data");
+                Log.d(tag,"DownLoad Success spareChangeCoin.data");
+                jumpToActivity();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                System.out.println("Fail to download spareChangeCoin.data");
-                if(isLogin)
-                SerializableManager.saveSerializable(weakActivity.get(),new ArrayList<Coin>(),"spareChangeCoin.data");
-
+                Log.d(tag,"Fail to download spareChangeCoin.data");
+                if(isLogin) {
+                    SerializableManager.saveSerializable(weakActivity.get(), new ArrayList<Coin>(), "spareChangeCoin.data");
+                    jumpToActivity();
+                }
             }
         });
 
@@ -120,15 +138,17 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
         userInfoRef.getFile(userInfoFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("DownLoad Success userInfo.data");
+                Log.d(tag,"DownLoad Success userInfo.data");
+                jumpToActivity();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                System.out.println("Fail to download userInfo.data");
-                if(isLogin)
-                    SerializableManager.saveSerializable(weakActivity.get(),new User(userID),"userInfo.data");
-
+                Log.d(tag,"Fail to download userInfo.data");
+                if(isLogin) {
+                    SerializableManager.saveSerializable(weakActivity.get(), new User(userID), "userInfo.data");
+                    jumpToActivity();
+                }
             }
         });
 
@@ -138,11 +158,26 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
+        jumpToActivity();
+    }
+
+
+    private void jumpToActivity(){
+        jump_counter++;
+        System.out.println(jump_counter);
+
+        // We will wait the fifth call of this function.
+        if(jump_counter <= 4){
+            System.out.println("");
+            return;
+        }
+        tipDialog.dismiss();
         Activity activity = this.weakActivity.get();
         if(activity instanceof LoginActivity){
             ((LoginActivity) activity).jumpToMap();
         }
     }
+
 }
 
 
