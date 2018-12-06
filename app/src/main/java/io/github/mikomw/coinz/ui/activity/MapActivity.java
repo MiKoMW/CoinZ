@@ -385,10 +385,10 @@ public class MapActivity extends AppCompatActivity implements
         Icon defult_marker;
         Icon marker;
 
-        peny_marker = iconFactory.fromResource(R.drawable.redcoin);
-        quid_marker = iconFactory.fromResource(R.drawable.bluecoin);
-        shil_marker = iconFactory.fromResource(R.drawable.greencoin);
-        dolr_marker = iconFactory.fromResource(R.drawable.yellowcoin);
+        peny_marker = iconFactory.fromResource(R.drawable.greencoin);
+        quid_marker = iconFactory.fromResource(R.drawable.yellowcoin);
+        shil_marker = iconFactory.fromResource(R.drawable.redcoin);
+        dolr_marker = iconFactory.fromResource(R.drawable.bluecoin);
         defult_marker = iconFactory.fromResource(R.drawable.blackcoin);
 
         List<MarkerOptions> markerOptions = new ArrayList<>();

@@ -68,7 +68,7 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
         StorageReference cur_user = users.child(userID);
         StorageReference todayCollectedRef = cur_user.child("todayCollectedCoinID.data");
         StorageReference collectedRef = cur_user.child("collectedCoin.data");
-        StorageReference spareChangeRef = cur_user.child("spareChangeCoin.data");
+        StorageReference spareChangeRef = cur_user.child("spareChange.data");
         StorageReference userInfoRef = cur_user.child("userInfo.data");
 
         // Upload the user data file.

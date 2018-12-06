@@ -68,7 +68,7 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
         StorageReference cur_user = users.child(userID);
         StorageReference todayCollectedRef = cur_user.child("todayCollectedCoinID.data");
         StorageReference collectedRef = cur_user.child("collectedCoin.data");
-        StorageReference spareChangeRef = cur_user.child("spareChangeCoin.data");
+        StorageReference spareChangeRef = cur_user.child("spareChange.data");
         StorageReference userInfoRef = cur_user.child("userInfo.data");
 
 
@@ -114,20 +114,20 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
             }
         });
 
-        File spareChangeCoinFile = new File(this.weakActivity.get().getFilesDir().getPath(),"spareChangeCoin.data");
+        File spareChangeFile = new File(this.weakActivity.get().getFilesDir().getPath(),"spareChange.data");
 
-        spareChangeRef.getFile(spareChangeCoinFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+        spareChangeRef.getFile(spareChangeFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Log.d(tag,"DownLoad Success spareChangeCoin.data");
+                Log.d(tag,"DownLoad Success spareChange.data");
                 jumpToActivity();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Log.d(tag,"Fail to download spareChangeCoin.data");
+                Log.d(tag,"Fail to download spareChange.data");
                 if(isLogin) {
-                    SerializableManager.saveSerializable(weakActivity.get(), new ArrayList<Coin>(), "spareChangeCoin.data");
+                    SerializableManager.saveSerializable(weakActivity.get(), new ArrayList<Coin>(), "spareChange.data");
                     jumpToActivity();
                 }
             }
