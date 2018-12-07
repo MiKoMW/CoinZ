@@ -448,6 +448,7 @@ public class MarketFragment extends Fragment {
         }
 
         if(!current_isCollected) {
+
             spareChange.remove(current_coin);
             user.addBalance(current_coin.getValue() * score[0]);
             current_coin = null;
