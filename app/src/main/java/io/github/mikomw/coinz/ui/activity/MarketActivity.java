@@ -2,6 +2,8 @@ package io.github.mikomw.coinz.ui.activity;
 
 
 
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -202,6 +204,18 @@ public class MarketActivity extends AppCompatActivity implements
             }
         });
 
+            // Onclick listener to copy the UID to the clip board.
+            UidTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
+                    cm.setText(Uid);
+                    Toast.makeText(MarketActivity.this, "Uid copied!", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
         File newFile = new File(getFilesDir().getPath()+"/userInfo.data");
         Log.d(tag, "Is user info file exsisting : " + newFile.exists());
         user = SerializableManager.readSerializable(this,"userInfo.data");
@@ -384,4 +398,3 @@ public class MarketActivity extends AppCompatActivity implements
     }
 
 }
-

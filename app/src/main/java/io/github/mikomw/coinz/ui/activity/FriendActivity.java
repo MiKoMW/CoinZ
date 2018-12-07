@@ -1,5 +1,7 @@
 package io.github.mikomw.coinz.ui.activity;
 
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,6 +45,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Pattern;
 
 import io.github.mikomw.coinz.R;
@@ -143,6 +147,19 @@ public class FriendActivity extends AppCompatActivity implements
 
             }
         });
+
+        // Onclick listener to copy the UID to the clip board.
+        UidTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
+                cm.setText(Uid);
+                Toast.makeText(FriendActivity.this, "Uid copied!", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
         File newFile = new File(getFilesDir().getPath()+"/userInfo.data");
         Log.d(tag,"The user data " + newFile.exists());
         user = SerializableManager.readSerializable(this,"userInfo.data");
@@ -295,6 +312,15 @@ public class FriendActivity extends AppCompatActivity implements
 
 
         });
+
+        // Set a timer to periodically check messages.
+        Timer timer = new Timer();
+
+        long delay1 = 10000;
+        long period1 = 10000;
+        // After 10 second check the enquires for every 10 seconds.
+        timer.schedule(new SynTask("Check Enquires"), delay1, period1);
+
 
     }
 
@@ -732,4 +758,19 @@ public class FriendActivity extends AppCompatActivity implements
     }
 
 
+
+    // Periodical task for checking enquiry.
+     class SynTask extends TimerTask {
+        private String jobName = "Syn_enquiry";
+         private SynTask(String job) {
+                      super();
+                       this.jobName = job;
+         }
+         @Override
+         public void run() {
+             Log.d("Syn_Enquiry",jobName);
+             check_sale_enquiry();
+             check_friend_enquiry();
+         }
+    }
 }

@@ -1,6 +1,8 @@
 package io.github.mikomw.coinz.ui.activity;
 
 import android.arch.lifecycle.Lifecycle;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -154,6 +156,18 @@ public class MapActivity extends AppCompatActivity implements
                         }}}).show();
 
                 }
+        });
+
+        // Onclick listener to copy the UID to the clip board.
+        UidTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
+                cm.setText(Uid);
+                Toast.makeText(MapActivity.this, "Uid copied!", Toast.LENGTH_SHORT).show();
+
+            }
         });
 
     }
