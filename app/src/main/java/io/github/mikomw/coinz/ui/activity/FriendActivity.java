@@ -295,24 +295,6 @@ public class FriendActivity extends AppCompatActivity implements
         check_friend_enquiry();
         check_sale_enquiry();
 
-        // File update listener for firestore.
-        friendEnquiryPoll.
-                whereEqualTo("to", Uid).
-                addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    System.out.println("Error");
-                    return;
-                }
-                //check_friend_enquiry();
-            }
-
-
-
-        });
-
         // Set a timer to periodically check messages.
         Timer timer = new Timer();
 
@@ -713,7 +695,6 @@ public class FriendActivity extends AppCompatActivity implements
                                                     saveData();
                                                     send_sale_enquiry(from,tempCoin,is_collected,price, 2);
                                                     Toast.makeText(FriendActivity.this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
-                                                    updateListView(new Friends(from,nickname));
 
                                                 }
                                             })
@@ -726,7 +707,7 @@ public class FriendActivity extends AppCompatActivity implements
                                         for(Coin coin : collectedCoin){
                                             if(coin.getValue() == coin_value && coin.getCurrency().equals(coin_currency)){
                                                 collectedCoin.remove(coin);
-                                                System.out.println("Found the coin!");
+                                                Log.e(tag,"Found the coin!");
                                                 break;
 
                                             }
@@ -735,7 +716,7 @@ public class FriendActivity extends AppCompatActivity implements
                                         for(Coin coin : spareChange){
                                             if(coin.getValue() == coin_value && coin.getCurrency().equals(coin_currency)){
                                                 spareChange.remove(coin);
-                                                System.out.println("Found the coin!");
+                                                Log.e(tag,"Found the coin!");
                                                 break;
 
                                             }
