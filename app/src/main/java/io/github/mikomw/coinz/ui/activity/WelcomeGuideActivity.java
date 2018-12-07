@@ -18,8 +18,15 @@ import io.github.mikomw.coinz.adapter.GuideViewPagerAdapter;
 import io.github.mikomw.coinz.util.SharedPreferencesUtil;
 
 /**
- * Created by xialo on 2016/7/25.
+ *
+ * A welcome guide in order to enhance the user experience. In this activity, a three pages user guide
+ * on how to play this game will be shown. This activity will be shown at the first time user open this game.
+ * Or user could read this guide by pressing the How to play button on the drawer in the major game activities.
+ *
+ * @author Songbo Hu
+ * @author xialo
  */
+
 
 public class WelcomeGuideActivity extends Activity implements View.OnClickListener {
     String tag = "WelcomeGuideActivity";

@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import java.util.List;
 
 /**
- * Created by xialo on 2016/7/25.
+ * This is adapted from xialo for welcome pages. This is the adapter for the guide view.
+ *
+ * @author Songbo Hu
+ * @author xialo on 2016/7/25.
  */
 public class GuideViewPagerAdapter extends PagerAdapter {
     private List<View> views;

@@ -26,27 +26,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.mapboxsdk.annotations.Marker;
-
 import com.qmuiteam.qmui.widget.QMUITabSegment;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import io.github.mikomw.coinz.R;
-import io.github.mikomw.coinz.coin.Coin;
 import io.github.mikomw.coinz.user.User;
 import io.github.mikomw.coinz.util.SerializableManager;
 import io.github.mikomw.coinz.util.uploadUserData;
 
-
+/**
+ * The map activity enables our players to pay coins into the central bank.
+ * This activity consists four fragment which will show the exchange rate information for all four currencies.
+ *
+ * @author Songbo Hu
+ */
 public class MarketActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener{
 
@@ -76,12 +75,7 @@ public class MarketActivity extends AppCompatActivity implements
                 FragmentTransaction ft = fragmentManager.beginTransaction();
                 ft.add(fragment, fragment.getClass().getSimpleName());
                 ft.commit();
-                /**
-                 * 在用FragmentTransaction.commit()方法提交FragmentTransaction对象后
-                 * 会在进程的主线程中，用异步的方式来执行。
-                 * 如果想要立即执行这个等待中的操作，就要调用这个方法（只能在主线程中调用）。
-                 * 要注意的是，所有的回调和相关的行为都会在这个调用中被执行完成，因此要仔细确认这个方法的调用位置。
-                 */
+
                 fragmentManager.executePendingTransactions();
 
             }

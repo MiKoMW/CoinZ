@@ -48,6 +48,16 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
+/**
+ *
+ * A welcome pages in order to enhance the user experience. In this activity, a three second animation
+ * will be displayed. During this time, all the public data will be downloaded (map and exchange rate).
+ * A sql data base will be created in this case.
+ *
+ * @author Songbo Hu
+ * @author xialo
+ */
+
 public class WelcomeActivity extends Activity {
 
     String tag = "WelcomeActivity";
@@ -310,7 +320,6 @@ public class WelcomeActivity extends Activity {
         }
 
 
-
         private InputStream downloadUrl(URL url) throws IOException {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000); // milliseconds!
@@ -350,12 +359,8 @@ public class WelcomeActivity extends Activity {
             }
 
 
-
-
             return exchangeRate;
         }
-
-
 
         @Override
         protected void onPostExecute(ArrayList<ExchangeRate> result) {
@@ -378,11 +383,7 @@ public class WelcomeActivity extends Activity {
             // Call back function.
             ((WelcomeActivity) activity).jumpToLogin();
 
-
         }
     }
-
-
-
 
 }

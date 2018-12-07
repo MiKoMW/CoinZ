@@ -9,6 +9,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+/**
+ * A help class to deal with the local user data IO.
+ * This manager will write and read a file with serializable data.
+ *
+ * @author Songbo Hu
+ */
+
+
 public class SerializableManager {
 
     /**
@@ -71,5 +79,4 @@ public class SerializableManager {
     public static void removeSerializable(Context context, String filename) {
         context.deleteFile(filename);
     }
-
 }

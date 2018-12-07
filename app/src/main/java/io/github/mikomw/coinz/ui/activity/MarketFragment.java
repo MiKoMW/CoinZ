@@ -42,12 +42,9 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MarketFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MarketFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * The market fragment will show the exchange information and enable player to pay in a certain currency.
+ *
+ * @author Songbo Hu
  */
 public class MarketFragment extends Fragment {
 
@@ -71,10 +68,9 @@ public class MarketFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param currency Parameter 1.
+     * @param currency Parameter 1 the currency corresponding to this page.
      * @return A new instance of fragment MarketFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static MarketFragment newInstance(String currency) {
         MarketFragment fragment = new MarketFragment();
         Bundle args = new Bundle();
@@ -239,16 +235,7 @@ public class MarketFragment extends Fragment {
         broadcastManager.unregisterReceiver(mAdDownLoadReceiver);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnFragmentInteractionListener {
         // No use for our app.
         void onFragmentInteraction(Uri uri);
@@ -275,8 +262,8 @@ public class MarketFragment extends Fragment {
         axisX.setHasTiltedLabels(true);
         axisX.setTextColor(Color.parseColor("#D6D6D9")); // Set the text color.
 
-        axisX.setTextSize(8);//设置字体大小
-        axisX.setMaxLabelChars(8);//最多几个X轴坐标
+        axisX.setTextSize(8);//Set text size.
+        axisX.setMaxLabelChars(8);
         axisX.setValues(mAxisXValues);
         data.setAxisXBottom(axisX);
         axisX.setHasLines(true);
@@ -286,7 +273,8 @@ public class MarketFragment extends Fragment {
         axisY.setName("");
         axisY.setTextSize(8);
         data.setAxisYLeft(axisY);
-        //设置行为属性，缩放、滑动、平移
+
+        // Set the user action with the graph.
         lineChart.setInteractive(true);
         lineChart.setZoomType(ZoomType.VERTICAL);
         lineChart.setMaxZoom((float) 3);
@@ -294,7 +282,8 @@ public class MarketFragment extends Fragment {
         lineChart.setVisibility(View.VISIBLE);
 
         lineChart.setHorizontalScrollBarEnabled(true);
-        //设置X轴数据的显示个数（x轴0-7个数据）
+
+        // Set how many data are we going to show on the x axis.
         Viewport v = new Viewport(lineChart.getMaximumViewport());
         v.left = 0;
         v.right= 7;
@@ -328,6 +317,7 @@ public class MarketFragment extends Fragment {
             user.setLastPayUpdateDate(Date.getDateInfo().today);
         }
 
+        // Discount the amount of coins for a user to pay in if the user payed a collected coin.
         havePaid.setText("You can pay in " +  (25 - user.getToday_sale()) + " more collected coins");
         if(current_coin!=null){
             cur_coin_value_textview.setText(current_coin.getValue() + "");
@@ -379,6 +369,7 @@ public class MarketFragment extends Fragment {
 
     }
 
+    // Jump tp the display coin activity in order to choose a coin to pay in.
     public void jumpToView(String currency){
 
         ArrayList<Coin> temp_collectCoin = new ArrayList<>();
@@ -467,11 +458,4 @@ public class MarketFragment extends Fragment {
 
 
     }
-
-
-
 }
-
-
-
-

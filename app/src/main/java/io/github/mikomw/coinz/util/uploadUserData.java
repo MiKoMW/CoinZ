@@ -22,6 +22,13 @@ import io.github.mikomw.coinz.coin.Coin;
 import io.github.mikomw.coinz.ui.activity.SignupActivity;
 import io.github.mikomw.coinz.user.User;
 
+/**
+ * An AsyncTask which will upload the user data to the remote firebase storage referenced by the unique user ID.
+ * This task will also initialize and create the new file for newly sign up users.
+ *
+ * @author Songbo Hu
+ */
+
 public class uploadUserData extends AsyncTask<String, Void, Boolean> {
 
     private final static String tag = "uploadUserDataTask";
@@ -214,7 +221,3 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
         }
     }
 }
-
-
-
-

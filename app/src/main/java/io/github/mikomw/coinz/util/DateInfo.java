@@ -2,6 +2,13 @@ package io.github.mikomw.coinz.util;
 
 import java.util.ArrayList;
 
+/**
+ * A DataInfo class contains the download url for the past 30 days and the data in yyyy/MM/dd/ format
+ * as a string.
+ *
+ * @author Songbo Hu
+ */
+
 public class DateInfo {
 
     public String todayURL;

@@ -5,37 +5,42 @@ import java.util.List;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import io.github.mikomw.coinz.db.ExchangeRate;
-import io.github.mikomw.coinz.db.RateHelper;
 
+
+/**
+ * A helper class to help us abstract the SQL language from our app.
+ * We can operate on our DB by calling method from this operator.
+ *
+ * @author Songbo Hu
+ */
 public class rateDBOperator {
     private RateHelper dbHelper;
     private SQLiteDatabase db;
 
+    // Constructor.
     public rateDBOperator(Context context) {
-        // Thinking!!
         dbHelper = new RateHelper(context, "/data/user/0/io.github.mikomw.coinz/files/rate.db", null, 1);
         db = dbHelper.getWritableDatabase();
     }
 
-
+    // Add a term in our DB
     public void add(ExchangeRate rate) {
         db.execSQL("insert into rateData values(?,?,?,?,?)",
                 new Object[] { rate.getDate(),rate.getSHIL(),rate.getDOLR(),rate.getQUID(),rate.getPENY()});
     }
 
-    // 修改联系人
+    // update a item in our DB
     public void update(ExchangeRate rate) {
         db.execSQL("update rateData set SHIL=?,DOLR=?,QUID=?,PENY=? where date=?",
                 new Object[] { rate.getDate(),rate.getSHIL(),rate.getDOLR(),rate.getQUID(),rate.getPENY(),rate.getDate()});
     }
 
-    // 删除联系人
+    // delete an item in our DB
     public void delete(String date) {
         db.execSQL("delete from rateData where date=?", new String[] { date });
     }
 
-    // 查询联系人
+    // Query one day exchange rate
     public ExchangeRate queryOne(String date) {
         ExchangeRate rate = new ExchangeRate();
         Cursor c = db.rawQuery("select * from rateData where date= ?", new String[] { date });
@@ -52,6 +57,7 @@ public class rateDBOperator {
         return rate;
     }
 
+    // Return all exchange dates which are stored in our DB
     public List<String> queryAlllRate() {
         ArrayList<String> rates = new ArrayList<String>();
         Cursor c = db.rawQuery("select date from rateData", null);
@@ -63,7 +69,7 @@ public class rateDBOperator {
 
     }
 
-    // 查询所有的联系人信息
+    // Query all the exchange rate in our DB.
     public List<ExchangeRate> queryMany() {
         ArrayList<ExchangeRate> rates = new ArrayList<ExchangeRate>();
         Cursor c = db.rawQuery("select * from rateData", null);
@@ -80,7 +86,7 @@ public class rateDBOperator {
         return rates;
     }
 
-    // 检验用户名是否已存在
+    // Check if a date is already in our DB
     public boolean CheckIsDataAlreadyInDBorNot(String value) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String Query = "Select * from rateData where date =?";
@@ -93,8 +99,5 @@ public class rateDBOperator {
         return false;
     }
 
-    public void closeDB(){
-
-    }
 }
 

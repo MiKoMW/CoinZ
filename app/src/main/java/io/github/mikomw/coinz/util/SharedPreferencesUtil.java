@@ -4,8 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
- * Created by xialo on 2016/7/25.
+ * A help class for set the shared preference.
+ *
+ * @author Songbo Hu
+ * @author xialo
  */
+
 public class SharedPreferencesUtil {
 
     private static final String spFileName = "welcomePage";

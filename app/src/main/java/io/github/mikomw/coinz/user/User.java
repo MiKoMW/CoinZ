@@ -6,6 +6,16 @@ import java.util.List;
 
 import io.github.mikomw.coinz.util.Date;
 
+/**
+ * A player class contains all the user information we need for this game. These user information is
+ * initialized and stored locally and updated to the remote storage regularly.Once a new user logged in,
+ * the game will download this data from the remote storage.
+ * privacy.
+ *
+ * @author Songbo Hu
+ */
+
+
 public class User implements Serializable {
 
     private final String UID;
@@ -13,8 +23,10 @@ public class User implements Serializable {
     private String email;
     private Double balance;
     private List<Friends> friendList;
+    // To see if we need to renew the pay in limit.
     private String lastPayUpdateDate;
     private int today_sale;
+    // To see if we need to renew the collected coins list.
     private String lastCollectedUpdateDate;
 
 
@@ -40,6 +52,7 @@ public class User implements Serializable {
         today_sale = 0;
     }
 
+    // Method for checking if a player could sell another collected coins today.
     public boolean ableToSale(){
         return today_sale < 25;
     }
@@ -52,6 +65,7 @@ public class User implements Serializable {
         this.today_sale = today_sale + 1;
     }
 
+    // Getter and setter methods for private fields.
     public int getToday_sale(){
         return today_sale;
     }

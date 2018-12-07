@@ -17,19 +17,23 @@ import java.util.ArrayList;
 
 import io.github.mikomw.coinz.coin.Coin;
 
-
+/**
+ * A display coin activity which will show the coin list with a selected currency.
+ *
+ * @author Songbo Hu
+ */
 public class displayCoinActivity extends AppCompatActivity {
 
-    String tag = "displayCoinActivity";
-    ArrayList<Coin> collectedCoin;
-    ArrayList<Coin> spareChange;
-    QMUIGroupListView mGroupListView;
+    private static final String tag = "displayCoinActivity";
+    private ArrayList<Coin> collectedCoin;
+    private ArrayList<Coin> spareChange;
+    private QMUIGroupListView mGroupListView;
 
-    String currency;
-    String shil = "SHIL";
-    String dolr = "DOLR";
-    String quid = "QUID";
-    String peny = "PENY";
+    private String currency;
+    private static final String shil = "SHIL";
+    private static final String dolr = "DOLR";
+    private static final String quid = "QUID";
+    private static final String peny = "PENY";
 
 
     @Override
@@ -144,6 +148,7 @@ public class displayCoinActivity extends AppCompatActivity {
         super.onStart();
     }
 
+    // On back button pressed, we go back to our previous activity.
     @Override
     public void onBackPressed() {
         System.out.println("Click");

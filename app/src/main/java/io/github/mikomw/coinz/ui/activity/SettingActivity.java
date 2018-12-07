@@ -1,25 +1,22 @@
 package io.github.mikomw.coinz.ui.activity;
 
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.Toast;
 
-import com.qmuiteam.qmui.util.QMUIDisplayHelper;
-import com.qmuiteam.qmui.widget.QMUILoadingView;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
-import java.util.Set;
 
 import io.github.mikomw.coinz.R;
-import io.github.mikomw.coinz.util.coinHelper;
 
+/**
+ * The setting activity enables our user to set their preference and log out.
+ *
+ * @author Songbo Hu
+ */
 public class SettingActivity extends AppCompatActivity {
     String tag = "SettingActivity";
     QMUIGroupListView mGroupListView;

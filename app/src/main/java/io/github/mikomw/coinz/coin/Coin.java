@@ -4,6 +4,15 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.io.Serializable;
 
+/**
+ * This class represent the four coins in our game. Each coin consist on unique ID,
+ * a double value denotes its value, its currency, the longitude latitude of its position.
+ * This class is passed our activity and the remote server regularly. This class implements
+ * serializable in order to make it is easier to store and pass.
+ *
+ * @author Songbo Hu
+ */
+
 public class Coin implements Serializable {
 
     private String id;
@@ -11,30 +20,19 @@ public class Coin implements Serializable {
     private String currency;
     private double lat;
     private double lng;
-    private boolean isFirstCollect;
 
 
+
+    // Two constructors for the class.
     public Coin(String id, double value, String currency, LatLng latLng) {
         this.id = id;
         this.value = value;
         this.currency = currency;
-        this.isFirstCollect = false;
         this.lat = latLng.getLatitude();
         this.lng = latLng.getLongitude();
     }
 
-    public Coin(String id, double value, String currency, LatLng latLng, boolean isFirstCollect) {
-        this.id = id;
-        this.value = value;
-        this.currency = currency;
-        this.isFirstCollect = isFirstCollect;
-        this.lat = latLng.getLatitude();
-        this.lng = latLng.getLongitude();
-    }
-
-    public void setLocation(LatLng a) {
-        this.lat = a.getLatitude();
-        this.lng = a.getLongitude();    }
+    // Setter and getter method for its private fields.
 
     public String getId() {
         return id;
@@ -53,14 +51,10 @@ public class Coin implements Serializable {
     }
 
     public String toString() {
-        String ans = id + "/" + value + "/" + currency;
-        return ans;
+        return id + "/" + value + "/" + currency;
     }
 
-    public Boolean isFirstCollect(){
-        return this.isFirstCollect;
-    }
-
+    // Override its equals and hashcode function.
     public boolean equals(Object obj) {
         if(obj == null) {
             return false;

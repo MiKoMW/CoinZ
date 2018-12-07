@@ -1,16 +1,20 @@
 package io.github.mikomw.coinz.db;
 
-import android.support.annotation.IdRes;
 
+/**
+ * A class to represent the exchange rates corresponding to gold value in a day.
+ *
+ * @author Songbo Hu
+ */
 public class ExchangeRate {
 
-    String Date;
+    private String Date;
+    private double SHIL;
+    private double DOLR;
+    private double QUID;
+    private double PENY;
 
-    double SHIL;
-    double DOLR;
-    double QUID;
-    double PENY;
-
+    // Setter and getter method for private field.
     public String getDate() {
         return Date;
     }
@@ -43,7 +47,6 @@ public class ExchangeRate {
         this.QUID = QUID;
     }
 
-
     public double getPENY() {
         return PENY;
     }
@@ -51,6 +54,5 @@ public class ExchangeRate {
     public void setPENY(double PENY) {
         this.PENY = PENY;
     }
-
 
 }

@@ -6,6 +6,11 @@ import com.google.firebase.storage.StorageReference;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * A helper class to help us delete all the previous user information.
+ *
+ * @author Songbo Hu
+ */
 public class deleteUserData {
 
     private final WeakReference<Activity> weakActivity;

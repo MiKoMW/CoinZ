@@ -25,13 +25,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.mapbox.android.core.permissions.PermissionsManager;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
@@ -44,7 +42,6 @@ import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -55,11 +52,16 @@ import io.github.mikomw.coinz.user.User;
 import io.github.mikomw.coinz.util.SerializableManager;
 import io.github.mikomw.coinz.util.uploadUserData;
 
+/**
+ * A friends list activity, user could add friends and trade coins between friends.
+ * All the query are delivered via a query poll in firebase firestore.
+ *
+ * @author Songbo Hu
+ */
 public class FriendActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     String tag = "FriendActivity";
-    private PermissionsManager permissionsManager;
 
     String Uid;
     User user;
@@ -67,6 +69,7 @@ public class FriendActivity extends AppCompatActivity implements
     TextView UidTextView;
     TextView userNickName;
 
+    // User could set up a avater in the future.
     ImageView avater;
 
     DrawerLayout drawer;
@@ -82,6 +85,7 @@ public class FriendActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend);
 
+        // Initialize the toolbar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
 
@@ -89,6 +93,7 @@ public class FriendActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        // Initialize the drawer.
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -100,15 +105,15 @@ public class FriendActivity extends AppCompatActivity implements
 
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        //设置navigationview的menu监听
+        // Add listener to the navigation menu.
         navigationView.setNavigationItemSelectedListener(this);
 
-
         Uid = getIntent().getStringExtra("Uid");
-        //userName.setText(Uid);
         View headerView = navigationView.getHeaderView(0);
         userNickName = headerView.findViewById(R.id.drawer_NikeName);
         UidTextView = headerView.findViewById(R.id.drawer_email);
+
+        // Enable our player to change their user name.
         userNickName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,7 +144,7 @@ public class FriendActivity extends AppCompatActivity implements
             }
         });
         File newFile = new File(getFilesDir().getPath()+"/userInfo.data");
-        System.out.println(newFile.exists());
+        Log.d(tag,"The user data " + newFile.exists());
         user = SerializableManager.readSerializable(this,"userInfo.data");
 
         spareChange = SerializableManager.readSerializable(this,"spareChange.data");
@@ -147,7 +152,7 @@ public class FriendActivity extends AppCompatActivity implements
         this.Uid = user.getUID();
         initUserView();
 
-
+        // Initialize the friends listview.
         mGroupListView=findViewById(R.id.friends_list);
 
 
@@ -168,6 +173,7 @@ public class FriendActivity extends AppCompatActivity implements
         Button add_friends_but = findViewById(R.id.add_frends);
         add_friends_but.setOnClickListener(this);
 
+        // We provide a button for players to update the query manually.
         Button syn_btn = findViewById(R.id.refresh);
         syn_btn.setOnClickListener(this);
     }
@@ -175,6 +181,7 @@ public class FriendActivity extends AppCompatActivity implements
 
 
 
+    // Set the navigation bar listener.
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -203,6 +210,7 @@ public class FriendActivity extends AppCompatActivity implements
     }
 
 
+    // If the user press the back button, we try to close the drawer first.
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -213,6 +221,7 @@ public class FriendActivity extends AppCompatActivity implements
         }
     }
 
+    // Update the user nickname and userID.
     private void initUserView(){
         UidTextView.setText(user.getUID());
         userNickName.setText(user.getNickName());
@@ -224,6 +233,7 @@ public class FriendActivity extends AppCompatActivity implements
         return true;
     }
 
+    // Listener for the option menu (overflow menu).
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -231,25 +241,23 @@ public class FriendActivity extends AppCompatActivity implements
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_explore) {
-            System.out.println("Explore");
+            Log.d(tag, "Go to activity Explore");
             Intent intent = new Intent(this, MapActivity.class);
             intent.putExtra("Uid",Uid);
             startActivity(intent);
-            System.out.println("Explore");
             return true;
         }
 
         if (id == R.id.action_market) {
-            System.out.println("Market");
+            Log.d(tag, "Go to activity Market");
             Intent intent = new Intent(this, MarketActivity.class);
             startActivity(intent);
             return true;
         }
 
         if (id == R.id.action_friend) {
-            System.out.println("Friend");
+            Log.d(tag, "Go to activity Friend");
             return true;
         }
 
@@ -260,12 +268,17 @@ public class FriendActivity extends AppCompatActivity implements
     @Override
     public void onStart() {
         super.onStart();
+
+        // Initialize the firestore query poll.
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         friendEnquiryPoll = db.collection("friendsenquirypoll");
         exchangeEnquiryPoll = db.collection("exchangeenquirypoll");
+
+        // Check the query when entering the activity.
         check_friend_enquiry();
         check_sale_enquiry();
 
+        // File update listener for firestore.
         friendEnquiryPoll.
                 whereEqualTo("to", Uid).
                 addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -278,6 +291,7 @@ public class FriendActivity extends AppCompatActivity implements
                 }
                 //check_friend_enquiry();
             }
+
 
 
         });
@@ -318,7 +332,7 @@ public class FriendActivity extends AppCompatActivity implements
     }
 
 
-
+    // Set on click listener.
     @Override
     public void onClick(View v) {
 
@@ -441,6 +455,7 @@ public class FriendActivity extends AppCompatActivity implements
 
 
 
+        // Save the data to the local data file and upload it to the remote database.
     public void saveData(){
 
         SerializableManager.saveSerializable(this,user,"userInfo.data");
@@ -453,6 +468,7 @@ public class FriendActivity extends AppCompatActivity implements
     }
 
 
+    // Update the friend list.
     public void updateListView(Friends friends){
         QMUIGroupListView.Section newSection = mGroupListView.getSection(0);
         QMUICommonListItemView temp = mGroupListView.createItemView(friends.Nickname);
@@ -463,6 +479,7 @@ public class FriendActivity extends AppCompatActivity implements
         newSection.addTo(mGroupListView);
     }
 
+    // If a player decided to sale coins to other friends, a menu popup first to ask user to choose a currency.
     public void popUpBottomMenu(String saleTo){
         final int sale_peny = 0;
         final int sale_shil = 1;
@@ -504,6 +521,7 @@ public class FriendActivity extends AppCompatActivity implements
 
     }
 
+    // A pop menu to ask user to choose a coin to sale.
     public void popSelectCoin(String uid, String currency){
 
         ArrayList<Coin> temp_spare = new ArrayList<>();
@@ -567,6 +585,7 @@ public class FriendActivity extends AppCompatActivity implements
 
     }
 
+    // A confirmation menu to ask user to choose how much he/she want to sale this coin.
     private void popupConfirmOrder(String uid, boolean isCollected, Coin coin){
 
         final QMUIDialog.EditTextDialogBuilder builder = new QMUIDialog.EditTextDialogBuilder(FriendActivity.this);
@@ -606,6 +625,10 @@ public class FriendActivity extends AppCompatActivity implements
     }
 
 
+    // Sale enquiry, from a user to another user index by unique user ID.
+    // The stage means the stage of the query.
+    // Stage 1 is a user propose a deal.
+    // Stage 2 is another user confirm the deal.
     private void send_sale_enquiry(String uid, Coin coin, boolean isCollected, double price ,long stage){
         Map<String, Object> enquiry = new HashMap<>();
 
@@ -622,7 +645,10 @@ public class FriendActivity extends AppCompatActivity implements
 
     }
 
-
+    // Adding friend enquiry, from a user to another user index by unique user ID.
+    // The stage means the stage of the query.
+    // Stage 1 is a user send a query to another user.
+    // Stage 2 is another user confirm the query.
     private void check_sale_enquiry(){
         exchangeEnquiryPoll.whereEqualTo("to", Uid)
                 .get()
@@ -706,7 +732,4 @@ public class FriendActivity extends AppCompatActivity implements
     }
 
 
-
-
 }
-

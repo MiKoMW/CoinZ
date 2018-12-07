@@ -23,6 +23,12 @@ import io.github.mikomw.coinz.coin.Coin;
 import io.github.mikomw.coinz.ui.activity.LoginActivity;
 import io.github.mikomw.coinz.user.User;
 
+/**
+ * An AsyncTask which will download all the user data corresponding to a unique user ID from the firebase storage.
+ *
+ * @author Songbo Hu
+ */
+
 public class downloadUserData extends AsyncTask<String, Void, Boolean> {
     private final static String tag = "downloadUserDataTask";
 

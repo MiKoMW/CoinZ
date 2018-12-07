@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
@@ -20,6 +19,13 @@ import io.github.mikomw.coinz.coin.Coin;
 import io.github.mikomw.coinz.user.User;
 import io.github.mikomw.coinz.util.SerializableManager;
 import io.github.mikomw.coinz.util.coinHelper;
+
+/**
+ * WalletActivity will show the coin and gold in user's wallet.
+ * User can see coins in four currencies in detail. User could not make any changes or deals in this page.
+ *
+ * @author Songbo Hu
+ */
 
 public class WalletActivity extends AppCompatActivity {
 

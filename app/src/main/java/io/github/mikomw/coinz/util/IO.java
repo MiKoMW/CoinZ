@@ -5,6 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
+/**
+ * A help class to help us deal with the local file IO.
+ *
+ * @author Songbo Hu
+ */
+
+
 public class IO {
 
 

@@ -54,6 +54,13 @@ import io.github.mikomw.coinz.util.Date;
 import io.github.mikomw.coinz.util.SerializableManager;
 import io.github.mikomw.coinz.util.uploadUserData;
 
+
+/**
+ * The map activity is the main game activity, user are able to collect the coins in this activity.
+ *
+ * @author Songbo Hu
+ */
+
 public class MapActivity extends AppCompatActivity implements
         OnMapReadyCallback, LocationEngineListener,
        PermissionsListener, NavigationView.OnNavigationItemSelectedListener{
@@ -82,11 +89,15 @@ public class MapActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize the map view from mapbox.
         Mapbox.getInstance(this, getString(R.string.mapboxtoken));
         setContentView(R.layout.activity_map);
         mapView = findViewById(R.id.mapbox);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        // Initialize the action bar and the drawer.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -114,6 +125,7 @@ public class MapActivity extends AppCompatActivity implements
         userNickName = headerView.findViewById(R.id.drawer_NikeName);
         UidTextView = headerView.findViewById(R.id.drawer_email);
 
+        // Enable our player to set up their user name.
         userNickName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,19 +166,19 @@ public class MapActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.nav_wallet) {
-            System.out.println("Wallet Selected");
+            Log.d(tag,"Wallet Selected");
             saveData();
             Intent intent = new Intent(this, WalletActivity.class);
             startActivityForResult(intent,0);
         } else if (id == R.id.nav_guide) {
 
-            System.out.println("Guide Sellected");
+            Log.d(tag,"Guide Sellected");
             saveData();
             Intent intent = new Intent(this, WelcomeGuideActivity.class);
             startActivityForResult(intent,0);
 
         } else if (id == R.id.nav_setting) {
-            System.out.println("setting selected;");
+            Log.d(tag,"setting selected;");
             saveData();
             Intent intent = new Intent(this, SettingActivity.class);
             startActivityForResult(intent,0);
@@ -194,7 +206,7 @@ public class MapActivity extends AppCompatActivity implements
             map = mapboxMap;
             map.getUiSettings().setCompassEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
-            System.out.println("MapReady!");
+            Log.d(tag,"MapReady!");
             todayCollectedID = SerializableManager.readSerializable(this,"todayCollectedCoinID.data");
             todayCoins = SerializableManager.readSerializable(this,"todayCoins.coin");
             CollectedCoins = SerializableManager.readSerializable(this,"collectedCoin.data");
@@ -205,6 +217,7 @@ public class MapActivity extends AppCompatActivity implements
                 saveData();
             }
 
+            // Set up the initial coin marks for today's coin
             setIcon();
             enableLocation();
             initUserView();
@@ -480,6 +493,10 @@ public class MapActivity extends AppCompatActivity implements
         mapView.onSaveInstanceState(outState);
     }
 
+    /**
+     * Check if there is any coin can be collected at current location.
+     * @param location the current location
+     */
     private void collectCoins(Location location){
         LatLng latLng = new LatLng(location.getLatitude(),
                 location.getLongitude());
@@ -505,6 +522,7 @@ public class MapActivity extends AppCompatActivity implements
 
     }
 
+    // Save and upload the user's data.
     public void saveData(){
         SerializableManager.saveSerializable(this,todayCollectedID,"todayCollectedCoinID.data");
         SerializableManager.saveSerializable(this,CollectedCoins,"collectedCoin.data");
@@ -515,4 +533,3 @@ public class MapActivity extends AppCompatActivity implements
     }
 
 }
-

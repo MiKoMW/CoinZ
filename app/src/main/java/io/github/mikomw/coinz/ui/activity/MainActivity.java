@@ -1,44 +1,21 @@
 package io.github.mikomw.coinz.ui.activity;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import io.github.mikomw.coinz.R;
-import io.github.mikomw.coinz.coin.Coin;
-import io.github.mikomw.coinz.util.Miko;
-import io.github.mikomw.coinz.util.deleteUserData;
 import io.github.mikomw.coinz.util.downloadUserData;
-import io.github.mikomw.coinz.util.uploadUserData;
 
 // This activity is for temporary testing purpose.
 public class MainActivity extends AppCompatActivity {

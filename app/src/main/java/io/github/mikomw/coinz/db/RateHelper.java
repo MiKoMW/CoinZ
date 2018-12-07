@@ -3,8 +3,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+
+/**
+ * A helper class for our DB operator.
+ *
+ * @author Songbo Hu
+ */
 public class RateHelper extends SQLiteOpenHelper {
-    public static final String CREATE_USERDATA = "create table rateData(date varchar(20) primary key,SHIL double,DOLR double,QUID double,PENY double)";
+    private static final String CREATE_USERDATA = "create table rateData(date varchar(20) primary key,SHIL double,DOLR double,QUID double,PENY double)";
     private Context mContext;
 
 
@@ -21,4 +27,3 @@ public class RateHelper extends SQLiteOpenHelper {
     }
 
 }
-

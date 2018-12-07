@@ -36,7 +36,11 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 /**
- * Created by WZH on 2017/3/25.
+ * A sign up activity which ask user to sign up with their email and password.
+ * Initialize the user data locally and upload them to the remote database.
+ *
+ * @author Songbo Hu
+ * @author WZH
  */
 
 public class SignupActivity  extends FragmentActivity implements View.OnClickListener  {
