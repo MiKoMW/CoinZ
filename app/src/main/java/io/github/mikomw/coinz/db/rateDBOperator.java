@@ -32,7 +32,7 @@ public class rateDBOperator {
     // update a item in our DB
     public void update(ExchangeRate rate) {
         db.execSQL("update rateData set SHIL=?,DOLR=?,QUID=?,PENY=? where date=?",
-                new Object[] { rate.getDate(),rate.getSHIL(),rate.getDOLR(),rate.getQUID(),rate.getPENY(),rate.getDate()});
+                new Object[] { rate.getSHIL(),rate.getDOLR(),rate.getQUID(),rate.getPENY(),rate.getDate()});
     }
 
     // delete an item in our DB

@@ -376,7 +376,7 @@ public class FriendActivity extends AppCompatActivity implements
 
 
                         }else {
-                            Toast.makeText(FriendActivity.this, "Please enter your nick name.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FriendActivity.this, "Please enter your friend's UID.", Toast.LENGTH_SHORT).show();
                         }}}).show();
                 break;
 
@@ -422,7 +422,10 @@ public class FriendActivity extends AppCompatActivity implements
                                                 .addAction("NO", new QMUIDialogAction.ActionListener() {
                                                     @Override
                                                     public void onClick(QMUIDialog dialog, int index) {
+
+                                                        document.getReference().delete();
                                                         dialog.dismiss();
+
                                                         }
                                                 })
                                                 .addAction("YES", new QMUIDialogAction.ActionListener() {
@@ -678,6 +681,7 @@ public class FriendActivity extends AppCompatActivity implements
                                             .addAction("NO", new QMUIDialogAction.ActionListener() {
                                                 @Override
                                                 public void onClick(QMUIDialog dialog, int index) {
+                                                    document.getReference().delete();
                                                     dialog.dismiss();
                                                 }
                                             })
