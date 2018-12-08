@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
@@ -175,7 +176,7 @@ public class MapActivity extends AppCompatActivity implements
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -335,7 +336,8 @@ public class MapActivity extends AppCompatActivity implements
         if (granted) {
             enableLocation();
         } else {
-// Open a dialogue with the user
+            Toast.makeText(MapActivity.this, "Location is necessary for this game.", Toast.LENGTH_SHORT).show();
+            enableLocation();
         }
     }
 
@@ -545,5 +547,4 @@ public class MapActivity extends AppCompatActivity implements
         System.out.println(Uid);
 
     }
-
 }

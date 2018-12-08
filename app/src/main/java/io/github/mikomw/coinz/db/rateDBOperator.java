@@ -19,7 +19,7 @@ public class rateDBOperator {
 
     // Constructor.
     public rateDBOperator(Context context) {
-        dbHelper = new RateHelper(context, "/data/user/0/io.github.mikomw.coinz/files/rate.db", null, 1);
+        dbHelper = new RateHelper(context, context.getFilesDir().getPath() + "/rate.db", null, 1);
         db = dbHelper.getWritableDatabase();
     }
 

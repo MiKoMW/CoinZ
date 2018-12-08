@@ -14,8 +14,8 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="hint_login_username">mimo@coinz.com</string>
-    <string name="hint_login_password">000000</string>
+    <string name="hint_login_username">Enter you email.</string>
+    <string name="hint_login_password">Enter your password.</string>
     <string name="login">Login</string>
     <string name="login_forget_pwd">Forget the password</string>
     <string name="please_input_limit_pwd">Please enter numbers or characters</string>

@@ -149,7 +149,7 @@ public class User implements Serializable {
         this.friendList = friendList;
     }
 
-    public List<Friends> getFriendUIDList() {
+    public List<Friends> getFriendList() {
         return friendList;
     }
 

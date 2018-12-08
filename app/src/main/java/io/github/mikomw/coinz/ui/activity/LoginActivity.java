@@ -113,7 +113,7 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
         logo = (ImageView) findViewById(R.id.logo);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         login_email = (EditText) findViewById(R.id.et_mobile);
-        login_email.setText("mimo@coinz.com");
+        login_email.setText("tester@coinz.com");
         login_password = (EditText) findViewById(R.id.et_password);
         login_password.setText("000000");
         iv_clean_phone = (ImageView) findViewById(R.id.iv_clean_phone);

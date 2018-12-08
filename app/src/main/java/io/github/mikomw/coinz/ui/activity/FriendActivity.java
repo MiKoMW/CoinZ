@@ -26,9 +26,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -176,7 +174,7 @@ public class FriendActivity extends AppCompatActivity implements
         newSection.setTitle("Friends");
 
         int con = 0;
-        for(Friends friend : user.getFriendUIDList()){
+        for(Friends friend : user.getFriendList()){
             QMUICommonListItemView temp = mGroupListView.createItemView(friend.Nickname);
             temp.setId(con);
             temp.setDetailText(friend.UID);
@@ -447,7 +445,7 @@ public class FriendActivity extends AppCompatActivity implements
                                         saveData();
                                         document.getReference().delete();
                                         updateListView(new Friends(from,nickname));
-
+                                        Toast.makeText(FriendActivity.this, "Friend added", Toast.LENGTH_SHORT).show();
                                     }
 
                                 }
@@ -724,7 +722,7 @@ public class FriendActivity extends AppCompatActivity implements
 
                                     saveData();
                                     document.getReference().delete();
-
+                                    Toast.makeText(FriendActivity.this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
                                 }
 
                             }

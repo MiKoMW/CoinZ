@@ -189,8 +189,7 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
         scrollView.addOnLayoutChangeListener(new ViewGroup.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-              /* old是改变前的左上右下坐标点值，没有old的是改变后的左上右下坐标点值
-              现在认为只要控件将Activity向上推的高度超过了1/3屏幕高，就认为软键盘弹起*/
+
                 if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
                     int dist = content.getBottom() - bottom;
                     if (dist>0){
@@ -208,7 +207,6 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
                         mAnimatorTranslateY.setDuration(300);
                         mAnimatorTranslateY.setInterpolator(new LinearInterpolator());
                         mAnimatorTranslateY.start();
-                        //键盘收回后，logo恢复原来大小，位置同样回到初始位置
                         zoomOut(logo);
                     }
                     service.setVisibility(View.VISIBLE);
@@ -311,7 +309,7 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
                         }
 
                         if (!task.isSuccessful()) {
-                            Toast.makeText(SignupActivity.this, R.string.auth_failed,
+                            Toast.makeText(SignupActivity.this, "Connection fail or User exists.",
                                     Toast.LENGTH_SHORT).show();
                         }
 

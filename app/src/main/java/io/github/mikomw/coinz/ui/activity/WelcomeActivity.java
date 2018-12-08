@@ -72,11 +72,8 @@ public class WelcomeActivity extends Activity {
     private int finished;
 
     private static final int[] Imgs={
-            R.drawable.me1,R.drawable.me2,
-            R.drawable.me3,R.drawable.me4,
-            R.drawable.me5,
-            R.drawable.me6,R.drawable.me7,
-            R.drawable.me8};
+            R.drawable.gs2
+    };
 
 
     DateInfo dateinfo;
