@@ -690,13 +690,17 @@ public class FriendActivity extends AppCompatActivity implements
                                                 public void onClick(QMUIDialog dialog, int index) {
                                                     dialog.dismiss();
                                                     document.getReference().delete();
-                                                    Coin tempCoin = new Coin("Spare",coin_value,coin_currency,new LatLng());
-                                                    spareChange.add(tempCoin);
-                                                    user.setBalance(user.getBalance() - price);
-                                                    saveData();
-                                                    send_sale_enquiry(from,tempCoin,is_collected,price, 2);
-                                                    Toast.makeText(FriendActivity.this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
 
+                                                    if(user.getBalance() < price ){
+                                                        Toast.makeText(FriendActivity.this, "Sorry you do not have enough money to buy!", Toast.LENGTH_SHORT).show();
+                                                    }else {
+                                                        Coin tempCoin = new Coin("Spare", coin_value, coin_currency, new LatLng());
+                                                        spareChange.add(tempCoin);
+                                                        user.setBalance(user.getBalance() - price);
+                                                        saveData();
+                                                        send_sale_enquiry(from, tempCoin, is_collected, price, 2);
+                                                        Toast.makeText(FriendActivity.this, "Offer Accepted!", Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }
                                             })
                                             .show();

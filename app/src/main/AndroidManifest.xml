@@ -49,9 +49,6 @@
             android:name=".ui.activity.MarketActivity"
             android:label="@string/title_activity_market"></activity>
         <activity android:name=".ui.activity.FriendActivity">
-
-
-
         </activity>
     </application>
 
