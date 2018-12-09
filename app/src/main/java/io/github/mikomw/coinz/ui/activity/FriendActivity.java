@@ -295,9 +295,9 @@ public class FriendActivity extends AppCompatActivity implements
         // Set a timer to periodically check messages.
         Timer timer = new Timer();
 
-        long delay1 = 10000;
-        long period1 = 10000;
-        // After 10 second check the enquires for every 10 seconds.
+        long delay1 = 60000;
+        long period1 = 60000;
+        // After 60 second check the enquires for every 60 seconds.
         timer.schedule(new SynTask("Check Enquires"), delay1, period1);
 
 

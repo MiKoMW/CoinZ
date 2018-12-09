@@ -341,8 +341,13 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
         } else {
             login_email.setError(null);
         }
+        if (!email.contains("@")) {
+            login_email.setError("Not a valid email");
+        } else {
+            login_email.setError(null);
+        }
 
-        String password = login_email.getText().toString();
+        String password = login_password.getText().toString();
         if (TextUtils.isEmpty(password)) {
             login_password.setError("Required.");
             valid = false;
@@ -354,11 +359,7 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
         } else {
             login_password.setError(null);
         }
-        if (!email.contains("@")) {
-            login_email.setError("Not a valid email");
-        } else {
-            login_email.setError(null);
-        }
+
 
         return valid;
     }

@@ -193,7 +193,7 @@ public class WalletActivity extends AppCompatActivity {
         ArrayList<Coin> collectCoin = collectedCoins.get(currency);
         ArrayList<Coin> spareChange = spareChanges.get(currency);
         Intent intent = new Intent();
-        intent.setClass(this, displayCoinActivity.class);
+        intent.setClass(this, DisplayCoinActivity.class);
         intent.putExtra("collectCoin", (ArrayList<Coin>) collectCoin);
         intent.putExtra("spareChange", (ArrayList<Coin>) spareChange);
         intent.putExtra("currency",currency);

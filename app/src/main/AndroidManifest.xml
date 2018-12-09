@@ -43,7 +43,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".ui.activity.MainActivity" />
         <activity android:name=".ui.activity.WalletActivity" />
-        <activity android:name=".ui.activity.displayCoinActivity" />
+        <activity android:name=".ui.activity.DisplayCoinActivity" />
         <activity android:name=".ui.activity.SettingActivity" />
         <activity
             android:name=".ui.activity.MarketActivity"

@@ -22,9 +22,9 @@ import io.github.mikomw.coinz.coin.Coin;
  *
  * @author Songbo Hu
  */
-public class displayCoinActivity extends AppCompatActivity {
+public class DisplayCoinActivity extends AppCompatActivity {
 
-    private static final String tag = "displayCoinActivity";
+    private static final String tag = "DisplayCoinActivity";
     private ArrayList<Coin> collectedCoin;
     private ArrayList<Coin> spareChange;
     private QMUIGroupListView mGroupListView;

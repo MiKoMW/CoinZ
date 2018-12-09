@@ -209,7 +209,7 @@ public class uploadUserData extends AsyncTask<String, Void, Boolean> {
 
         // We will wait the fifth call of this function.
         if(jump_counter <= 4){
-            System.out.println("");
+            System.out.println(jump_counter);
             return;
         }
         if(isSignUp) {

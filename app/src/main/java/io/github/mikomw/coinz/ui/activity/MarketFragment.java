@@ -387,7 +387,7 @@ public class MarketFragment extends Fragment {
             }
         }
 
-        intent.setClass(getContext(), displayCoinActivity.class);
+        intent.setClass(getContext(), DisplayCoinActivity.class);
         intent.putExtra("collectCoin", (ArrayList<Coin>) temp_collectCoin);
         intent.putExtra("spareChange", (ArrayList<Coin>) temp_spareChange);
         intent.putExtra("currency",currency);
