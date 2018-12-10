@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.util.downloadUserData;
 
-// This activity is for temporary testing purpose.
+// This activity is for temporary testing purpose. Submitted! : )
 public class MainActivity extends AppCompatActivity {
 
     @Override
