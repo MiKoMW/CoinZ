@@ -13,6 +13,7 @@ import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.coin.Coin;
@@ -86,7 +87,7 @@ public class WalletActivity extends AppCompatActivity {
         toolbar.setTitle("My Wallet");
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         toolbar.setTitleTextColor(getResources().getColor(R.color.black));

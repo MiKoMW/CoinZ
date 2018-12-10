@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.coin.Coin;
@@ -107,7 +109,7 @@ public class MarketFragment extends Fragment {
             thisCurrency = getArguments().getString(ARG_PARAM1);
         }
 
-        user = SerializableManager.readSerializable(getContext(),"userInfo.data");
+        user = SerializableManager.readSerializable(Objects.requireNonNull(getContext()),"userInfo.data");
 
         spareChange = SerializableManager.readSerializable(getContext(),"spareChange.data");
         collectedCoin = SerializableManager.readSerializable(getContext(),"collectedCoin.data");
@@ -120,7 +122,7 @@ public class MarketFragment extends Fragment {
 
     // Initialize the view.
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
@@ -177,7 +179,7 @@ public class MarketFragment extends Fragment {
         currency.setText(thisCurrency);
         TextView value = root.findViewById(R.id.market_fragment_value);
         ImageView icon = root.findViewById(R.id.market_fragment_curr_icon);
-        value.setText("" + score[0] + " Gold");
+        value.setText(String.format("%s Gold", score[0]));
 
         switch (thisCurrency) {
             case "PENY":
@@ -312,19 +314,19 @@ public class MarketFragment extends Fragment {
     private void updatePage(){
 
         if(!user.isUpdated(Date.getDateInfo().today)){
-            System.out.println("User is not upadted!");
+            System.out.println("User is not updated!");
             user.resetSale();
             user.setLastPayUpdateDate(Date.getDateInfo().today);
         }
 
         // Discount the amount of coins for a user to pay in if the user payed a collected coin.
-        havePaid.setText("You can pay in " +  (25 - user.getToday_sale()) + " more collected coins");
+        havePaid.setText(String.format(getString(R.string.coinlimit), 25 - user.getToday_sale()));
         if(current_coin!=null){
-            cur_coin_value_textview.setText(current_coin.getValue() + "");
-            cur_coin_gold_textview.setText((current_coin.getValue() * score[0]) + "");
+            cur_coin_value_textview.setText(String.format("%s", current_coin.getValue()));
+            cur_coin_gold_textview.setText(String.format("%s", current_coin.getValue() * score[0]));
         }else{
-            cur_coin_value_textview.setText("Select a coin");
-            cur_coin_gold_textview.setText("Select a coin");
+            cur_coin_value_textview.setText(R.string.selectacoin);
+            cur_coin_gold_textview.setText(R.string.selectacoin);
         }
 
 
@@ -348,7 +350,7 @@ public class MarketFragment extends Fragment {
                 // we can only update the UI in the main thread.
                 new Handler().post(new Runnable() {
                     public void run() {
-                        user = SerializableManager.readSerializable(getContext(),"userInfo.data");
+                        user = SerializableManager.readSerializable(Objects.requireNonNull(getContext()),"userInfo.data");
                         updatePage();
                     }
                 });
@@ -360,7 +362,7 @@ public class MarketFragment extends Fragment {
 
     public void saveData(){
 
-        SerializableManager.saveSerializable(getContext(),user,"userInfo.data");
+        SerializableManager.saveSerializable(Objects.requireNonNull(getContext()),user,"userInfo.data");
         SerializableManager.saveSerializable(getContext(),collectedCoin,"collectedCoin.data");
         SerializableManager.saveSerializable(getContext(),spareChange,"spareChange.data");
 
@@ -387,7 +389,7 @@ public class MarketFragment extends Fragment {
             }
         }
 
-        intent.setClass(getContext(), DisplayCoinActivity.class);
+        intent.setClass(Objects.requireNonNull(getContext()), DisplayCoinActivity.class);
         intent.putExtra("collectCoin", (ArrayList<Coin>) temp_collectCoin);
         intent.putExtra("spareChange", (ArrayList<Coin>) temp_spareChange);
         intent.putExtra("currency",currency);
@@ -405,7 +407,7 @@ public class MarketFragment extends Fragment {
         if(!data.hasExtra("result")){
             return;
         }
-        current_coin = (Coin) data.getExtras().get("result");//得到新Activity 关闭后返回的数据
+        current_coin = (Coin) Objects.requireNonNull(data.getExtras()).get("result");
         current_isCollected = data.getExtras().getBoolean("collected");
         Log.d(tag,"the selected coin is collected: " + current_isCollected);
         Log.d(tag,"the selected coin is " + current_coin);
@@ -442,7 +444,7 @@ public class MarketFragment extends Fragment {
             // Broad to all other fragment to update the UI.
             Intent intent = new Intent("sale");
             intent.putExtra("change", "yes");
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(Objects.requireNonNull(getActivity())).sendBroadcast(intent);
 
             return;
         }
@@ -454,9 +456,7 @@ public class MarketFragment extends Fragment {
             current_coin = null;
             updatePage();
             saveData();
-            return;
         }
-
 
     }
 }

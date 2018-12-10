@@ -10,6 +10,8 @@ import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
 
+import java.util.Objects;
+
 import io.github.mikomw.coinz.R;
 
 /**
@@ -30,7 +32,7 @@ public class SettingActivity extends AppCompatActivity {
         toolbar.setTitle("Setting");
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         toolbar.setTitleTextColor(getResources().getColor(R.color.black));

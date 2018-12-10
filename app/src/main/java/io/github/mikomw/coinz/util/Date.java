@@ -1,5 +1,7 @@
 package io.github.mikomw.coinz.util;
 
+import android.annotation.SuppressLint;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,8 +21,7 @@ public class Date {
     public static String getTodayUrl() {
         Calendar calendar = Calendar.getInstance();
         String  today = new SimpleDateFormat("yyyy/MM/dd/").format(calendar.getTime());
-        String todayURL ="http://homepages.inf.ed.ac.uk/stg/coinz/" +  today +"coinzmap.geojson";
-        return todayURL;
+        return "http://homepages.inf.ed.ac.uk/stg/coinz/" +  today +"coinzmap.geojson";
     }
 
     /**
@@ -32,7 +33,7 @@ public class Date {
         ArrayList<String> ans = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         for(int con = 0; con < 30; con++) {
-            String temp_day = new SimpleDateFormat("yyyy/MM/dd/").format(calendar.getTime());
+            @SuppressLint("SimpleDateFormat") String temp_day = new SimpleDateFormat("yyyy/MM/dd/").format(calendar.getTime());
             String tempURL = "http://homepages.inf.ed.ac.uk/stg/coinz/" + temp_day + "coinzmap.geojson";
             ans.add(tempURL);
             calendar.add(Calendar.DATE, -1);
@@ -50,15 +51,14 @@ public class Date {
 
         ArrayList<String> month = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
-        String today  = new SimpleDateFormat("yyyy/MM/dd/").format(calendar.getTime());
+        @SuppressLint("SimpleDateFormat") String today  = new SimpleDateFormat("yyyy/MM/dd/").format(calendar.getTime());
         for(int con = 0; con < 30; con++) {
-            String temp_day = new SimpleDateFormat("yyyy/MM/dd/").format(calendar.getTime());
+            @SuppressLint("SimpleDateFormat") String temp_day = new SimpleDateFormat("yyyy/MM/dd/").format(calendar.getTime());
             month.add(temp_day);
             calendar.add(Calendar.DATE, -1);
         }
 
-        DateInfo dateInfo = new DateInfo(todayURL,today,monthURL,month);
-        return dateInfo;
+        return new DateInfo(todayURL,today,monthURL,month);
 
     }
 

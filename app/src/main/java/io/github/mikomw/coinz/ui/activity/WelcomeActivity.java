@@ -29,6 +29,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -235,7 +236,7 @@ public class WelcomeActivity extends Activity {
                 if(coins == null){
                     return;
                 }
-                for (Feature feature : coins.features()) {
+                for (Feature feature : Objects.requireNonNull(coins.features())) {
                     // Coin features ==============================================//
                     String id = feature.getStringProperty("id");
                     Double value = Double.parseDouble(feature.getStringProperty("value"));
@@ -382,5 +383,4 @@ public class WelcomeActivity extends Activity {
 
         }
     }
-
 }

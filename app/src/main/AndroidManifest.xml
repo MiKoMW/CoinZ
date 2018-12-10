@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="io.github.mikomw.coinz">
 
     <!-- Lecture Permission -->
@@ -22,7 +23,8 @@
         android:roundIcon="@drawable/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ui.activity.WelcomeActivity"
             android:theme="@style/Appwelcome">
@@ -47,7 +49,7 @@
         <activity android:name=".ui.activity.SettingActivity" />
         <activity
             android:name=".ui.activity.MarketActivity"
-            android:label="@string/title_activity_market"></activity>
+            android:label="@string/title_activity_market" />
         <activity android:name=".ui.activity.FriendActivity">
         </activity>
     </application>

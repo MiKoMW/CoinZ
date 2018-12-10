@@ -5,7 +5,7 @@ import io.github.mikomw.coinz.util.uploadUserData;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Objects;
 
 
 /**
@@ -180,6 +182,7 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
 
 
         scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return true;
@@ -214,10 +217,8 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
             }
         });
     }
-    /**
-     * 缩小
-     * @param view
-     */
+
+
     public void zoomIn(final View view, float dist) {
         view.setPivotY(view.getHeight());
         view.setPivotX(view.getWidth() / 2);
@@ -232,10 +233,7 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
         mAnimatorSet.start();
     }
 
-    /**
-     * f放大
-     * @param view
-     */
+
     public void zoomOut(final View view) {
         view.setPivotY(view.getHeight());
         view.setPivotX(view.getWidth() / 2);
@@ -303,7 +301,7 @@ public class SignupActivity  extends FragmentActivity implements View.OnClickLis
                         Log.d(tag, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
                         if(task.isSuccessful()){
-                            String Uid = mAuth.getCurrentUser().getUid();
+                            String Uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
                             uploadUserData uploadUserData = new uploadUserData(SignupActivity.this);
                             uploadUserData.execute(Uid);
                         }

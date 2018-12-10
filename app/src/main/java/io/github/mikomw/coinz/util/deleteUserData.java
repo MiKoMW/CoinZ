@@ -2,8 +2,6 @@ package io.github.mikomw.coinz.util;
 
 import android.app.Activity;
 
-import com.google.firebase.storage.StorageReference;
-
 import java.lang.ref.WeakReference;
 
 /**

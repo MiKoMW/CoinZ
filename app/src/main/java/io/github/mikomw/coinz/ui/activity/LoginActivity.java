@@ -6,6 +6,7 @@ import io.github.mikomw.coinz.util.downloadUserData;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -188,6 +189,7 @@ public class LoginActivity  extends FragmentActivity implements View.OnClickList
 
 
         scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return true;

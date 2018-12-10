@@ -14,6 +14,7 @@ import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import io.github.mikomw.coinz.coin.Coin;
 
@@ -50,7 +51,7 @@ public class DisplayCoinActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.display_coin_bar);
         toolbar.setTitle("My " + currency);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         toolbar.setTitleTextColor(getResources().getColor(R.color.black));

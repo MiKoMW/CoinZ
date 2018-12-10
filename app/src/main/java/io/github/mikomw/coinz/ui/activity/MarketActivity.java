@@ -36,6 +36,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.user.User;
@@ -83,7 +84,7 @@ public class MarketActivity extends AppCompatActivity implements
             }
 
 
-            if (fragment.getView().getParent() == null) {
+            if (Objects.requireNonNull(fragment.getView()).getParent() == null) {
                 container.addView(fragment.getView());  // Get view for viewpager.
             }
             return fragment.getView();
@@ -100,12 +101,12 @@ public class MarketActivity extends AppCompatActivity implements
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object o) {
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
             return view == o;
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
+        public void destroyItem(ViewGroup container, int position, @NonNull Object object) {
             container.removeView(mPages.get(Pager.getPagerFromPositon(position)).getView()); // remove the layout of other pages.
         }
     };
@@ -153,7 +154,7 @@ public class MarketActivity extends AppCompatActivity implements
         // Initialize the tool bar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -210,7 +211,7 @@ public class MarketActivity extends AppCompatActivity implements
                 public void onClick(View view) {
                     ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
-                    cm.setText(Uid);
+                    Objects.requireNonNull(cm).setText(Uid);
                     Toast.makeText(MarketActivity.this, "Uid copied!", Toast.LENGTH_SHORT).show();
 
                 }
@@ -271,7 +272,7 @@ public class MarketActivity extends AppCompatActivity implements
     // Navigation menu listener.
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -396,5 +397,4 @@ public class MarketActivity extends AppCompatActivity implements
         uploadUserData uploadUserData = new uploadUserData(this);
         uploadUserData.execute(this.Uid);
     }
-
 }

@@ -79,8 +79,7 @@ public class User implements Serializable {
     }
 
     public String toString() {
-        String ans = this.email + "/" + this.UID;
-        return ans;
+        return this.email + "/" + this.UID;
     }
 
 
@@ -132,13 +131,11 @@ public class User implements Serializable {
     }
 
     public void addBalance(Double addbalance){
-        Double ans = this.balance + addbalance;
-        this.balance = ans;
+        this.balance = this.balance + addbalance;
     }
 
     public void removeBalance(Double removebalance){
-        Double ans = this.balance - removebalance;
-        this.balance = ans;
+        this.balance = this.balance - removebalance;
     }
 
     public String getUID(){

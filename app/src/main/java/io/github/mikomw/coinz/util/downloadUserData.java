@@ -185,5 +185,3 @@ public class downloadUserData extends AsyncTask<String, Void, Boolean> {
     }
 
 }
-
-

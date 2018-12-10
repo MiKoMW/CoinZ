@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 import io.github.mikomw.coinz.R;
 import io.github.mikomw.coinz.coin.Coin;
@@ -104,7 +105,7 @@ public class MapActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -165,7 +166,7 @@ public class MapActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
-                cm.setText(Uid);
+                Objects.requireNonNull(cm).setText(Uid);
                 Toast.makeText(MapActivity.this, "Uid copied!", Toast.LENGTH_SHORT).show();
 
             }

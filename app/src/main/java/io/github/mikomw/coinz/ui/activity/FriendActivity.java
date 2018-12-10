@@ -42,6 +42,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
@@ -91,7 +92,7 @@ public class FriendActivity extends AppCompatActivity implements
 
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // Initialize the drawer.
@@ -151,7 +152,7 @@ public class FriendActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
-                cm.setText(Uid);
+                Objects.requireNonNull(cm).setText(Uid);
                 Toast.makeText(FriendActivity.this, "Uid copied!", Toast.LENGTH_SHORT).show();
 
             }
@@ -409,7 +410,7 @@ public class FriendActivity extends AppCompatActivity implements
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
 
                                     long stage = (long) document.get("stage");
                                     String from = (String) document.get("from");
@@ -611,7 +612,7 @@ public class FriendActivity extends AppCompatActivity implements
                     public void onClick(QMUIDialog dialog, int index) {
                         CharSequence text = builder.getEditText().getText();
                         if (text != null && text.length() > 0 ) {
-                            Pattern pattern = Pattern.compile("^[-\\+]?[.\\d]*$");
+                            Pattern pattern = Pattern.compile("^[-+]?[.\\d]*$");
 
                             if(pattern.matcher(text.toString()).matches()){
                                 Toast.makeText(FriendActivity.this, "Order sent!", Toast.LENGTH_SHORT).show();
@@ -664,7 +665,7 @@ public class FriendActivity extends AppCompatActivity implements
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
 
                                 long stage = (long) document.get("stage");
                                 String from = (String) document.get("from");

@@ -1,9 +1,7 @@
 package io.github.mikomw.coinz.util;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 
 /**
  * A help class to help us deal with the local file IO.
