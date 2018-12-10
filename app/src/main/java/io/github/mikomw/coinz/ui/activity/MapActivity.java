@@ -215,7 +215,7 @@ public class MapActivity extends AppCompatActivity implements
     }
 
     public void onMapReady(MapboxMap mapboxMap) {
-
+        System.out.println("Map Ready!!!!");
         if (mapboxMap == null) {
             Log.d(tag, "[onMapReady] mapBox is null");
         } else {
@@ -230,6 +230,7 @@ public class MapActivity extends AppCompatActivity implements
 
             if(!user.getLastCollectedUpdateDate().equals(Date.getDateInfo().today)){
                 todayCollectedID = new HashSet<>();
+                user.setLastCollectedUpdateDate(Date.getDateInfo().today);
                 saveData();
             }
 
@@ -520,6 +521,7 @@ public class MapActivity extends AppCompatActivity implements
         for(Coin coin : this.todayCoins){
             if(coin.getLatLng().distanceTo(latLng) <= 25){
                 if(!todayCollectedID.contains(coin.getId())){
+                    System.out.println("CoinID" + todayCollectedID.size());
                     todayCollectedID.add(coin.getId());
                     CollectedCoins.add(coin);
 
@@ -541,6 +543,7 @@ public class MapActivity extends AppCompatActivity implements
 
     // Save and upload the user's data.
     public void saveData(){
+        SerializableManager.saveSerializable(this,user,"userInfo.data");
         SerializableManager.saveSerializable(this,todayCollectedID,"todayCollectedCoinID.data");
         SerializableManager.saveSerializable(this,CollectedCoins,"collectedCoin.data");
         uploadUserData uploadUserData = new uploadUserData(this);
